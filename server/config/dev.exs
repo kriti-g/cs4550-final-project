@@ -2,7 +2,7 @@ use Mix.Config
 
 # Configure your database
 config :roommate_app, RoommateApp.Repo,
-  username: "postgres",
+  username: "roommate_app",
   password: "postgres",
   database: "roommate_app_dev",
   hostname: "localhost",
