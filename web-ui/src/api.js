@@ -177,30 +177,54 @@ export function refresh_session() {}
 export function get_session() {
   return store.getState().session;
 }
-export function create_user(user) {
-  return api_post("/users", { user });
+export async function create_user(user) {
+  return await api_post("/users", { user });
 }
 
-export function create_event(event) {
-  return api_post("/events", { event });
+export async function create_group(group) {
+  return api_post("/groups", { group });
 }
 
-export function create_invitee(invitee) {
-  return api_post("/invitees", { invitee });
+export async function create_chore(chore) {
+  return api_post("/chores", { chore });
 }
 
-export function update_invitee(invitee) {
-  return api_patch("/invitees/" + invitee.id, { invitee });
+export async function create_responsibility(responsibility) {
+  return api_post("/responsibilities", { responsibility });
 }
 
-export function update_event(event) {
-  return api_patch("/events/" + event.id, { event });
+export async function create_invite(invite) {
+  return api_post("/invites", { invite });
 }
 
-export function update_user(user) {
+export async function update_group(group) {
+  return api_patch("/groups/" + group.id, { group });
+}
+
+export async function update_chore(chore) {
+  return api_patch("/chores/" + chore.id, { chore });
+}
+
+export async function update_user(user) {
   return api_patch("/users/" + user.id, { user });
 }
 
-export function delete_comment(comment_id) {
-  return api_delete("/comments/" + comment_id, { id: comment_id });
+export async function update_responsibility(responsibility) {
+  return api_patch("/responsibilities/" + responsibility.id, { responsibility });
+}
+
+export async function delete_invite(invite_id){
+  return api_delete("/invites/" + invite_id, { id: invite_id })
+}
+
+export async function delete_group(group_id){
+  return api_delete("/groups/" + group_id, { id: group_id })
+}
+
+export async function delete_chore(chore_id){
+  return api_delete("/chores/" + chore_id, { id: chore_id })
+}
+
+export async function delete_responsibility(responsibility_id) {
+  return api_delete("/responsibilities/" + responsibility_id, { id: responsibility_id });
 }

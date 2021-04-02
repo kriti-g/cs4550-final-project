@@ -7,7 +7,7 @@ let SessionInfo = connect()(({session}) => {
     function logout() {
         // TODO
     }
-    
+
     return (
         <Nav>
             <NavLink to="">Groups</NavLink>
