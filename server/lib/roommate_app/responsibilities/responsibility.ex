@@ -5,8 +5,10 @@ defmodule RoommateApp.Responsibilities.Responsibility do
   schema "responsibilities" do
     field :completions, :integer
     field :deadline, :naive_datetime
-    field :user_id, :id
-    field :chore_id, :id
+
+    belongs_to :group, RoommateApp.Groups.Group
+    belongs_to :user, RoommateApp.Users.User
+    belongs_to :chore, RoommateApp.Chores.Chore
 
     timestamps()
   end
@@ -14,7 +16,7 @@ defmodule RoommateApp.Responsibilities.Responsibility do
   @doc false
   def changeset(responsibility, attrs) do
     responsibility
-    |> cast(attrs, [:completions, :deadline])
-    |> validate_required([:completions, :deadline])
+    |> cast(attrs, [:completions, :deadline, :group_id, :user_id, :chore_id])
+    |> validate_required([:completions, :deadline, :group_id, :user_id, :chore_id])
   end
 end

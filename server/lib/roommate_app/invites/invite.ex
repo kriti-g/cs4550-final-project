@@ -3,8 +3,8 @@ defmodule RoommateApp.Invites.Invite do
   import Ecto.Changeset
 
   schema "invites" do
-    field :group_id, :id
-    field :user_id, :id
+    belongs_to :group, RoommateApp.Groups.Group
+    belongs_to :user, RoommateApp.Users.User
 
     timestamps()
   end
@@ -12,7 +12,7 @@ defmodule RoommateApp.Invites.Invite do
   @doc false
   def changeset(invite, attrs) do
     invite
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:group_id, :user_id])
+    |> validate_required([:group_id, :user_id])
   end
 end

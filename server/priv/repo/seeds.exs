@@ -26,7 +26,7 @@ end
 alicenbob = Repo.insert!(%Group{name: "Home in Boston", address: "333 Huntington, Boston MA", rotation_order: "[1,2]"})
 
 alice = Inject.user("Alice", "password1", "alice@email.com", alicenbob.id)
-bob = Inject.user("Bob", "passwordd2", "bob@email.com", alicenbob.id)
+_bob = Inject.user("Bob", "passwordd2", "bob@email.com", alicenbob.id)
 
 c1 = %Chore{
   name: "Washing dishes",
@@ -42,7 +42,8 @@ r1 = %Responsibility{
   completions: 1,
   deadline: ~N[2022-01-19 23:00:00],
   user_id: alice.id,
-  chore_id: chore1.id
+  chore_id: chore1.id,
+  group_id: alicenbob.id
 }
 
 Repo.insert!(r1)
