@@ -1,7 +1,9 @@
 import { Alert, Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import pick from 'lodash/pick';
+import store from "./store";
 
 
 function UserNew() {
@@ -67,7 +69,16 @@ function UserNew() {
     function onSubmit(event){
         event.preventDefault();
         let data = pick(user, ["name", "email", "phone_number", "password"]);
-        // TODO
+        create_user(user).then((data) => {
+          if (data.error) {
+            // if receiving an error, display it.
+            store.dispatch({type: "error/set", data: data.error});
+          } else {
+            store.dispatch({type: "user/set", data: data.data});
+            store.dispatch({type: "user_form/set", data: data.data});
+            //history.push("/");
+          }
+        })
     }
 
     function update(field, event) {

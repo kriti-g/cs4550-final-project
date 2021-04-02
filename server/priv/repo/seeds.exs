@@ -17,16 +17,16 @@ alias RoommateApp.Chores.Chore
 alias RoommateApp.Responsibilities.Responsibility
 
 defmodule Inject do
-  def user(name, pass, email, group_id) do
+  def user(name, pass, email, num, group_id) do
     hash = Argon2.hash_pwd_salt(pass)
-    Repo.insert!(%User{name: name, email: email, password_hash: hash, group_id: group_id})
+    Repo.insert!(%User{name: name, email: email, phone_number: num, password_hash: hash, group_id: group_id})
   end
 end
 
 alicenbob = Repo.insert!(%Group{name: "Home in Boston", address: "333 Huntington, Boston MA", rotation_order: "[1,2]"})
 
-alice = Inject.user("Alice", "password1", "alice@email.com", alicenbob.id)
-_bob = Inject.user("Bob", "passwordd2", "bob@email.com", alicenbob.id)
+alice = Inject.user("Alice", "password1", "alice@email.com", "7777777777", alicenbob.id)
+_bob = Inject.user("Bob", "passwordd2", "bob@email.com", "6666666666", alicenbob.id)
 
 c1 = %Chore{
   name: "Washing dishes",
