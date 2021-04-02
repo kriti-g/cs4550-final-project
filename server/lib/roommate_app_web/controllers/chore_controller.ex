@@ -18,7 +18,7 @@ defmodule RoommateAppWeb.ChoreController do
       conn
     else
       conn
-      |> put_flash(:error, "You don't have access to this invitation.")
+      |> put_flash(:error, "You don't have access to this chore.")
       |> redirect(to: Routes.page_path(conn, :index))
     end
   end
@@ -29,16 +29,23 @@ defmodule RoommateAppWeb.ChoreController do
   end
 
   def create(conn, %{"chore" => chore_params}) do
-    case Chores.create_chore(chore_params) do
-      {:ok, %Chore{} = chore} ->
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", Routes.chore_path(conn, :show, chore))
-        |> render("show.json", chore: chore)
-      {:error, _changeset} ->
-        conn
-        |> put_resp_header("content-type", "application/json; charset=UTF-8")
-        |> send_resp(422, Jason.encode!(%{error: "Failed to create new group."}))
+    user = conn.assigns[:user]
+    if is_group_member(user, chore_params) do
+      case Chores.create_chore(chore_params) do
+        {:ok, %Chore{} = chore} ->
+          conn
+          |> put_status(:created)
+          |> put_resp_header("location", Routes.chore_path(conn, :show, chore))
+          |> render("show.json", chore: chore)
+        {:error, _changeset} ->
+          conn
+          |> put_resp_header("content-type", "application/json; charset=UTF-8")
+          |> send_resp(422, Jason.encode!(%{error: "Failed to create new group."}))
+      end
+    else
+      conn
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(422, Jason.encode!(%{error: "You don't have access to this group."}))
     end
   end
 
