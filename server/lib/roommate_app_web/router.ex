@@ -21,7 +21,7 @@ defmodule RoommateAppWeb.Router do
     resources "/users", UserController, except: [:new, :edit]
     resources "/chores", ChoreController, except: [:new, :edit]
     resources "/responsibilities", ResponsibilityController, except: [:new, :edit]
-    resources "/invites", InviteController, except: [:new, :edit]
+    resources "/invites", InviteController, except: [:new, :edit, :update]
     resources "/session", SessionController, only: [:create]
 
   end
