@@ -3,10 +3,10 @@ defmodule RoommateApp.Repo.Migrations.CreateResponsibilities do
 
   def change do
     create table(:responsibilities) do
-      add :completions, :integer
-      add :deadline, :naive_datetime
-      add :user_id, references(:users, on_delete: :delete_all)
-      add :chore_id, references(:chores, on_delete: :delete_all)
+      add :completions, :integer, null: false
+      add :deadline, :naive_datetime, null: false
+      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :chore_id, references(:chores, on_delete: :delete_all), null: false
 
       timestamps()
     end

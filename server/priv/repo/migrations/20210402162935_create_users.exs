@@ -3,10 +3,10 @@ defmodule RoommateApp.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :name, :string
-      add :email, :string
-      add :password_hash, :string
-      add :group_id, references(:groups, on_delete: :nothing)
+      add :name, :string, null: false
+      add :email, :string, null: false
+      add :password_hash, :string, null: false
+      add :group_id, references(:groups, on_delete: :nothing), null: true
 
 
       timestamps()

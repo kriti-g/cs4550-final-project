@@ -3,11 +3,11 @@ defmodule RoommateApp.Repo.Migrations.CreateChores do
 
   def change do
     create table(:chores) do
-      add :name, :string
-      add :desc, :text
-      add :rotation, :integer
-      add :frequency, :integer
-      add :group_id, references(:groups, on_delete: :delete_all)
+      add :name, :string, null: false
+      add :desc, :text, null: false
+      add :rotation, :integer, null: false
+      add :frequency, :integer, null: false
+      add :group_id, references(:groups, on_delete: :delete_all), null: false
 
       timestamps()
     end
