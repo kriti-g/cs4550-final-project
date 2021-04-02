@@ -1,7 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-function ShowChore({chore}) {
+function ShowChore({chore, session}) {
     return (
         <Row>
             <Col>
@@ -45,4 +45,4 @@ function ShowChore({chore}) {
 }
 
 
-export default connect(({chore})=>({chore}))(ShowChore);
+export default connect(({chore, session})=>({chore, session}))(ShowChore); // TODO
