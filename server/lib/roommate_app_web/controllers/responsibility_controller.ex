@@ -11,7 +11,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     render(conn, "index.json", responsibilities: responsibilities)
   end
 
-  def create(conn, %{"responsibility" => responsibility_params, "session" => session}) do
+  def create(conn, %{"responsibility" => responsibility_params}) do
     with {:ok, %Responsibility{} = responsibility} <- Responsibilities.create_responsibility(responsibility_params) do
       conn
       |> put_status(:created)
@@ -20,12 +20,12 @@ defmodule RoommateAppWeb.ResponsibilityController do
     end
   end
 
-  def show(conn, %{"id" => id, "session" => session}) do
+  def show(conn, %{"id" => id}) do
     responsibility = Responsibilities.get_responsibility!(id)
     render(conn, "show.json", responsibility: responsibility)
   end
 
-  def update(conn, %{"id" => id, "responsibility" => responsibility_params, "session" => session}) do
+  def update(conn, %{"id" => id, "responsibility" => responsibility_params}) do
     responsibility = Responsibilities.get_responsibility!(id)
 
     with {:ok, %Responsibility{} = responsibility} <- Responsibilities.update_responsibility(responsibility, responsibility_params) do
@@ -33,7 +33,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     end
   end
 
-  def delete(conn, %{"id" => id, "session" => session}) do
+  def delete(conn, %{"id" => id}) do
     responsibility = Responsibilities.get_responsibility!(id)
 
     with {:ok, %Responsibility{}} <- Responsibilities.delete_responsibility(responsibility) do

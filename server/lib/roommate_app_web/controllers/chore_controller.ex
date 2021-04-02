@@ -11,7 +11,7 @@ defmodule RoommateAppWeb.ChoreController do
     render(conn, "index.json", chores: chores)
   end
 
-  def create(conn, %{"chore" => chore_params, "session" => session}) do
+  def create(conn, %{"chore" => chore_params}) do
     with {:ok, %Chore{} = chore} <- Chores.create_chore(chore_params) do
       conn
       |> put_status(:created)
@@ -20,12 +20,12 @@ defmodule RoommateAppWeb.ChoreController do
     end
   end
 
-  def show(conn, %{"id" => id, "session" => session}) do
+  def show(conn, %{"id" => id}) do
     chore = Chores.get_chore!(id)
     render(conn, "show.json", chore: chore)
   end
 
-  def update(conn, %{"id" => id, "chore" => chore_params, "session" => session}) do
+  def update(conn, %{"id" => id, "chore" => chore_params}) do
     chore = Chores.get_chore!(id)
 
     with {:ok, %Chore{} = chore} <- Chores.update_chore(chore, chore_params) do
@@ -33,7 +33,7 @@ defmodule RoommateAppWeb.ChoreController do
     end
   end
 
-  def delete(conn, %{"id" => id, "session" => session}) do
+  def delete(conn, %{"id" => id}) do
     chore = Chores.get_chore!(id)
 
     with {:ok, %Chore{}} <- Chores.delete_chore(chore) do
