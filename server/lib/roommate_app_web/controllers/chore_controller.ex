@@ -3,6 +3,9 @@ defmodule RoommateAppWeb.ChoreController do
 
   alias RoommateApp.Chores
   alias RoommateApp.Chores.Chore
+  alias RoommateAppWeb.Plugs
+
+  plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
 
   action_fallback RoommateAppWeb.FallbackController
 

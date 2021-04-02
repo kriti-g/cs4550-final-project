@@ -3,6 +3,9 @@ defmodule RoommateAppWeb.GroupController do
 
   alias RoommateApp.Groups
   alias RoommateApp.Groups.Group
+  alias RoommateAppWeb.Plugs
+
+  plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
 
   action_fallback RoommateAppWeb.FallbackController
 

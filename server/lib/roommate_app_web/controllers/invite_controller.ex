@@ -3,6 +3,9 @@ defmodule RoommateAppWeb.InviteController do
 
   alias RoommateApp.Invites
   alias RoommateApp.Invites.Invite
+  alias RoommateAppWeb.Plugs
+
+  plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
 
   action_fallback RoommateAppWeb.FallbackController
 
