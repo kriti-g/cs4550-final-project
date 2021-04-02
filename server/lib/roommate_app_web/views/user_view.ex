@@ -14,6 +14,6 @@ defmodule RoommateAppWeb.UserView do
     %{id: user.id,
       name: user.name,
       email: user.email,
-      password_hash: user.password_hash}
+      group_id: user.group_id}
   end
 end
