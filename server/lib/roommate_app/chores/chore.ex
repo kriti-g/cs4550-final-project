@@ -7,7 +7,8 @@ defmodule RoommateApp.Chores.Chore do
     field :frequency, :integer
     field :name, :string
     field :rotation, :integer
-    field :group_id, :id
+
+    belongs_to :group, RoommateApp.Groups.Group
 
     timestamps()
   end
@@ -15,7 +16,7 @@ defmodule RoommateApp.Chores.Chore do
   @doc false
   def changeset(chore, attrs) do
     chore
-    |> cast(attrs, [:name, :desc, :rotation, :frequency])
-    |> validate_required([:name, :desc, :rotation, :frequency])
+    |> cast(attrs, [:name, :desc, :rotation, :frequency, :group_id])
+    |> validate_required([:name, :desc, :rotation, :frequency, :group_id])
   end
 end

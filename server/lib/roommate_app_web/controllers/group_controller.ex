@@ -12,7 +12,7 @@ defmodule RoommateAppWeb.GroupController do
   action_fallback RoommateAppWeb.FallbackController
 
   # Require the session user to have no assigned group
-  def require_no_group do
+  def require_no_group(conn, _arg) do
     if conn.assigns[:user].group_id == nil do
       conn
     else
@@ -24,7 +24,7 @@ defmodule RoommateAppWeb.GroupController do
 
   # Require the session user to be assigned to the group that they are
   # attempting to interact with.
-  def require_this_group do
+  def require_this_group(conn, _arg) do
     this_group_id = String.to_integer(conn.params["id"])
     if conn.assigns[:user].group_id == this_group_id do
       conn

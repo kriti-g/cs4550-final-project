@@ -6,8 +6,22 @@ defmodule RoommateAppWeb.ChoreController do
   alias RoommateAppWeb.Plugs
 
   plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
+  plug :require_group_member when action in [:show, :update, :delete]
 
   action_fallback RoommateAppWeb.FallbackController
+
+  def require_group_member(conn, _arg) do
+    chore_id = String.to_integer(conn.params["id"])
+    chore = Chores.get_chore!(chore_id)
+    user = conn.assigns[:user]
+    if (chore.group_id == user.group_id) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You don't have access to this invitation.")
+      |> redirect(to: Routes.page_path(conn, :index))
+    end
+  end
 
   def index(conn, _params) do
     chores = Chores.list_chores()
@@ -15,11 +29,16 @@ defmodule RoommateAppWeb.ChoreController do
   end
 
   def create(conn, %{"chore" => chore_params}) do
-    with {:ok, %Chore{} = chore} <- Chores.create_chore(chore_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.chore_path(conn, :show, chore))
-      |> render("show.json", chore: chore)
+    case Chores.create_chore(chore_params) do
+      {:ok, %Chore{} = chore} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.chore_path(conn, :show, chore))
+        |> render("show.json", chore: chore)
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to create new group."}))
     end
   end
 
@@ -31,16 +50,26 @@ defmodule RoommateAppWeb.ChoreController do
   def update(conn, %{"id" => id, "chore" => chore_params}) do
     chore = Chores.get_chore!(id)
 
-    with {:ok, %Chore{} = chore} <- Chores.update_chore(chore, chore_params) do
-      render(conn, "show.json", chore: chore)
+    case Chores.update_chore(chore, chore_params) do
+      {:ok, %Chore{} = chore} ->
+        render(conn, "show.json", chore: chore)
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to create new group."}))
     end
   end
 
   def delete(conn, %{"id" => id}) do
     chore = Chores.get_chore!(id)
 
-    with {:ok, %Chore{}} <- Chores.delete_chore(chore) do
-      send_resp(conn, :no_content, "")
+    case Chores.delete_chore(chore) do
+      {:ok, %Chore{}} ->
+        send_resp(conn, :no_content, "")
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to create new group."}))
     end
   end
 end

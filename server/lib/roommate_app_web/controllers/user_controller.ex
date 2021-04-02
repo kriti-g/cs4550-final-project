@@ -12,7 +12,7 @@ defmodule RoommateAppWeb.UserController do
 
   # Require the user associated with the session to match the user being
   # accessed.
-  def require_this_user do
+  def require_this_user(conn, _arg) do
     this_user_id = String.to_integer(conn.params["id"])
     if conn.assigns[:user].id == this_user_id do
       conn
@@ -63,7 +63,7 @@ defmodule RoommateAppWeb.UserController do
   def delete(conn, %{"id" => id}) do
     user = Users.get_user!(id)
 
-    case Users.update_user(user, user_params) do
+    case Users.delete_user(user) do
       {:ok, %User{}} ->
         send_resp(conn, :no_content, "")
       {:error, _changeset} ->

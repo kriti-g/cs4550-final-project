@@ -6,11 +6,11 @@ defmodule RoommateAppWeb.InviteController do
   alias RoommateAppWeb.Plugs
 
   plug Plugs.RequireLoggedIn when action in [:show, :delete, :create]
-  plug :require_invitee_or_group_member when action in [:delete]
+  plug :require_invitee_or_group_member when action in [:show, :delete]
 
   action_fallback RoommateAppWeb.FallbackController
 
-  def require_invitee_or_group_member do
+  def require_invitee_or_group_member(conn, _arg) do
     this_invite_id = String.to_integer(conn.params["id"])
     invite = Invites.get_invite!(this_invite_id)
     user = conn.assigns[:user]
@@ -32,7 +32,7 @@ defmodule RoommateAppWeb.InviteController do
     user = conn.assigns[:user]
     if is_group_member(user, invite_params) do
       case Invites.create_invite(invite_params) do
-        {:ok, %Invite{} = invite}
+        {:ok, %Invite{} = invite} ->
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.invite_path(conn, :show, invite))
@@ -57,7 +57,7 @@ defmodule RoommateAppWeb.InviteController do
   def delete(conn, %{"id" => id}) do
     invite = Invites.get_invite!(id)
     case Invites.delete_invite(invite) do
-      {:ok, %Invite{} = invite}
+      {:ok, %Invite{}} ->
         send_resp(conn, :no_content, "")
       {:error, _changeset} ->
         conn
