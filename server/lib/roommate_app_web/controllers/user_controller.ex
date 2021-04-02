@@ -11,7 +11,7 @@ defmodule RoommateAppWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"user" => user_params, "session" => session}) do
     with {:ok, %User{} = user} <- Users.create_user(user_params) do
       conn
       |> put_status(:created)
@@ -20,12 +20,12 @@ defmodule RoommateAppWeb.UserController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "session" => session}) do
     user = Users.get_user!(id)
     render(conn, "show.json", user: user)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(conn, %{"id" => id, "user" => user_params, "session" => session}) do
     user = Users.get_user!(id)
 
     with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
@@ -33,7 +33,7 @@ defmodule RoommateAppWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id, "session" => session}) do
     user = Users.get_user!(id)
 
     with {:ok, %User{}} <- Users.delete_user(user) do

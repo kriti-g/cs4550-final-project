@@ -23,7 +23,7 @@ defmodule Inject do
   end
 end
 
-alicenbob = Repo.insert!(%Group{name:"Home in Boston", address:"333 Huntington, Boston MA", rotation_order:"[1,2]"})
+alicenbob = Repo.insert!(%Group{name: "Home in Boston", address: "333 Huntington, Boston MA", rotation_order: "[1,2]"})
 
 alice = Inject.user("Alice", "password1", "alice@email.com", alicenbob.id)
 bob = Inject.user("Bob", "passwordd2", "bob@email.com", alicenbob.id)

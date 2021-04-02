@@ -11,7 +11,7 @@ defmodule RoommateAppWeb.GroupController do
     render(conn, "index.json", groups: groups)
   end
 
-  def create(conn, %{"group" => group_params}) do
+  def create(conn, %{"group" => group_params, "session" => session}) do
     with {:ok, %Group{} = group} <- Groups.create_group(group_params) do
       conn
       |> put_status(:created)
@@ -20,12 +20,12 @@ defmodule RoommateAppWeb.GroupController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "session" => session}) do
     group = Groups.get_group!(id)
     render(conn, "show.json", group: group)
   end
 
-  def update(conn, %{"id" => id, "group" => group_params}) do
+  def update(conn, %{"id" => id, "group" => group_params, "session" => session}) do
     group = Groups.get_group!(id)
 
     with {:ok, %Group{} = group} <- Groups.update_group(group, group_params) do
@@ -33,7 +33,7 @@ defmodule RoommateAppWeb.GroupController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id, "session" => session}) do
     group = Groups.get_group!(id)
 
     with {:ok, %Group{}} <- Groups.delete_group(group) do
