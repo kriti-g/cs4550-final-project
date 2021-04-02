@@ -45,6 +45,9 @@ defmodule RoommateApp.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:argon2_elixir, "~> 2.0"},
+      {:password_validator, "~> 0.4"}
     ]
   end
 
