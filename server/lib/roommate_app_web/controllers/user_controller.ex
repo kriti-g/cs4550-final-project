@@ -29,11 +29,16 @@ defmodule RoommateAppWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Users.create_user(user_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+    case Users.create_user(user_params) do
+      {:ok, %User{} = user} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.user_path(conn, :show, user))
+        |> render("show.json", user: user)
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to register new user."}))
     end
   end
 
@@ -45,16 +50,26 @@ defmodule RoommateAppWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Users.get_user!(id)
 
-    with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
+    case Users.update_user(user, user_params) do
+      {:ok, %User{} = user} ->
+        render(conn, "show.json", user: user)
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to update user."}))
     end
   end
 
   def delete(conn, %{"id" => id}) do
     user = Users.get_user!(id)
 
-    with {:ok, %User{}} <- Users.delete_user(user) do
-      send_resp(conn, :no_content, "")
+    case Users.update_user(user, user_params) do
+      {:ok, %User{}} ->
+        send_resp(conn, :no_content, "")
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to delete user."}))
     end
   end
 end

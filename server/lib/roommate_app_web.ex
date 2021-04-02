@@ -23,6 +23,7 @@ defmodule RoommateAppWeb do
 
       import Plug.Conn
       import RoommateAppWeb.Gettext
+      import RoommateAppWeb.Helpers
       alias RoommateAppWeb.Router.Helpers, as: Routes
     end
   end
@@ -68,6 +69,7 @@ defmodule RoommateAppWeb do
 
       import RoommateAppWeb.ErrorHelpers
       import RoommateAppWeb.Gettext
+      import RoommateAppWeb.Helpers
       alias RoommateAppWeb.Router.Helpers, as: Routes
     end
   end
