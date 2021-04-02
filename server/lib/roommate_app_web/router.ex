@@ -13,10 +13,17 @@ defmodule RoommateAppWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", RoommateAppWeb do
+  scope "/api/v1", RoommateAppWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/groups", GroupController, except: [:new, :edit]
+    resources "/users", UserController, except: [:new, :edit]
+    resources "/chores", ChoreController, except: [:new, :edit]
+    resources "/responsibilities", ResponsibilityController, except: [:new, :edit]
+    resources "/invites", InviteController, except: [:new, :edit]
+    resources "/session", SessionController, only: [:create]
+
   end
 
   # Other scopes may use custom stacks.
