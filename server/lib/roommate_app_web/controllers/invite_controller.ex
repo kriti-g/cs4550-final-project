@@ -11,7 +11,7 @@ defmodule RoommateAppWeb.InviteController do
     render(conn, "index.json", invites: invites)
   end
 
-  def create(conn, %{"invite" => invite_params, "session" => session}) do
+  def create(conn, %{"invite" => invite_params}) do
     with {:ok, %Invite{} = invite} <- Invites.create_invite(invite_params) do
       conn
       |> put_status(:created)
@@ -20,12 +20,12 @@ defmodule RoommateAppWeb.InviteController do
     end
   end
 
-  def show(conn, %{"id" => id, "session" => session}) do
+  def show(conn, %{"id" => id}) do
     invite = Invites.get_invite!(id)
     render(conn, "show.json", invite: invite)
   end
 
-  def update(conn, %{"id" => id, "invite" => invite_params, "session" => session}) do
+  def update(conn, %{"id" => id, "invite" => invite_params}) do
     invite = Invites.get_invite!(id)
 
     with {:ok, %Invite{} = invite} <- Invites.update_invite(invite, invite_params) do
@@ -33,7 +33,7 @@ defmodule RoommateAppWeb.InviteController do
     end
   end
 
-  def delete(conn, %{"id" => id, "session" => session}) do
+  def delete(conn, %{"id" => id}) do
     invite = Invites.get_invite!(id)
 
     with {:ok, %Invite{}} <- Invites.delete_invite(invite) do
