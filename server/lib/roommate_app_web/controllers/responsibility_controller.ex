@@ -40,6 +40,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
           chore_deadline_str = Integer.to_string(responsibility.deadline.month) <> "/" <> Integer.to_string(responsibility.deadline.day) <> "/" <> Integer.to_string(responsibility.deadline.year)
           # TODO : chore_deadline, format it so it says "...in x days: 3/31/2021."
           # howto; deadline - current_time for " ... x days"
+
           msg = chore_name <> " is due: " <> chore_deadline <> "."
           Sms.sendSMS(%{"phone"=> user.phone_number, "msg" => msg})
 
