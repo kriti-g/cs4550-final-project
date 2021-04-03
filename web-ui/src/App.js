@@ -1,7 +1,7 @@
 import './App.scss';
 import { Switch, Route } from 'react-router-dom';
 import Container from 'react-bootstrap';
-import Nav from './Nav';
+import AppNav from './Nav';
 import Home from './Home';
 import UserList from './User/List';
 import UserNew from './User/New';
@@ -15,7 +15,7 @@ import ShowGroup from './Group/Show';
 function App() {
   return (
     <Container>
-      <Nav/>
+      <AppNav/>
       <Switch>
         <Route path="/" component={Home}/>
         <Route path="/users" component={UserList}/>

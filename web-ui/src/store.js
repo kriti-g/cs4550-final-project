@@ -76,7 +76,13 @@ function restore_session() {
     return null;
   }
 }
-
+/*
+session = {
+  user_id: user.id,
+  name: user.name,
+  token: Phoenix.Token.sign(conn, "user_id", user.id)
+}
+*/
 function session(state = restore_session(), action) {
   switch (action.type) {
     case "session/set":
@@ -95,9 +101,13 @@ function root_reducer(state, action) {
     users,
     user,
     user_form,
-    events,
-    event,
-    error,
+    group_chores,
+    chore,
+    user_responsibilities,
+    group_responsibilities,
+    group_invites,
+    group,
+    group_members,
     session
   });
   return reducer(state, action);

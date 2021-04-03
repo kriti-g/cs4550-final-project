@@ -9,7 +9,8 @@ defmodule RoommateApp.Groups.Group do
 
     has_many :users, RoommateApp.Users.User, on_delete: :nothing
     has_many :chores, RoommateApp.Chores.Chore
-    
+    has_many :responsibilities, RoommateApp.Responsibilities.Responsibility
+
     timestamps()
   end
 

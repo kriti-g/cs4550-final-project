@@ -13,6 +13,15 @@ defmodule RoommateAppWeb.ResponsibilityView do
   def render("responsibility.json", %{responsibility: responsibility}) do
     %{id: responsibility.id,
       completions: responsibility.completions,
-      deadline: responsibility.deadline}
+      deadline: responsibility.deadline},
+      chore: render_one(responsibility.chore, RoommateAppWeb.ChoreView, "chore_limited.json"),
+      user: render_one(responsibility.user, RoommateAppWeb.UserView, "user.json")}
+  end
+
+  def render("responsibility_nochore.json", %{responsibility: responsibility}) do
+    %{id: responsibility.id,
+      completions: responsibility.completions,
+      deadline: responsibility.deadline},
+      user: render_one(responsibility.user, RoommateAppWeb.UserView, "user.json")}
   end
 end

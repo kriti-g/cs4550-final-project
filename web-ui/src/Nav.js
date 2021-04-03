@@ -2,17 +2,18 @@ import { Alert, Button, Container, Col, Form, Nav, Navbar, Row } from 'react-boo
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useState } from 'react';
+import { api_login } from './api';
 
-let SessionInfo = connect()(({session}) => {
+let SessionInfo = connect()(({session, dispatch}) => {
     function logout() {
-        // TODO
+        dispatch({type: "session/clear"})
     }
 
     return (
         <Nav>
             <NavLink to="">Groups</NavLink>
             <Navbar.Text>
-                User: {session.user.name} &nbsp;
+                User: {session.name} &nbsp;
             </Navbar.Text>
             <Button variant="outline-secondary" onClick={logout}>Logout</Button>
         </Nav>
@@ -24,7 +25,7 @@ function Login() {
     const [password, setPassword] = useState("");
     function onSubmit(event) {
         event.preventDefault();
-        // TODO
+        api_login(email, password);
     }
     return (
         <Nav>
@@ -70,6 +71,7 @@ function AppNav({error}) {
                 <Navbar variant="light">
                     <Nav>
                         <NavLink to="/">Home</NavLink>
+                        <NavLink to="/group"></NavLink>
                     </Nav>
                     <LoginOrLogoutNav />
                 </Navbar>
@@ -82,3 +84,5 @@ function AppNav({error}) {
         </Container>
     );
 }
+
+export default connect(({error})=>({error}))(AppNav)
