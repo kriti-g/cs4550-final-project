@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 
 
-function UserNew({session}) {
+function ChoreNew({session}) {
     const [chore, setChore] = useState({
         name: "",
         description: "",
@@ -90,4 +90,4 @@ function UserNew({session}) {
 }
 
 
-export default connect(({session}) => ({session}))(UserNew);
+export default connect(({session}) => ({session}))(ChoreNew);
