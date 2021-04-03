@@ -9,6 +9,8 @@ defmodule RoommateApp.Users.User do
     field :password_hash, :string
 
     belongs_to :group, RoommateApp.Groups.Group
+    has_many :responsibilities, RoommateApp.Responsibilities.Responsibility
+
 
     timestamps()
   end
