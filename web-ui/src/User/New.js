@@ -77,7 +77,6 @@ function UserNew() {
             store.dispatch({type: "error/set", data: data.error});
           } else {
             // store.dispatch({type: "user/set", data: data.data});
-            // store.dispatch({type: "user_form/set", data: data.data});
             // api_login(data.data.email, user["password"]);
             history.push("/");
           }

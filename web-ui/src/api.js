@@ -82,10 +82,10 @@ export function fetch_user(id) {
   );
 }
 
-export function fetch_roommate_group(id) {
-  api_get("/rmgroup/" + id).then((data) =>
+export function fetch_group(id) {
+  api_get("/groups/" + id).then((data) =>
     store.dispatch({
-      type: "rmgroup/get",
+      type: "group/get",
       data: data,
     })
   );
