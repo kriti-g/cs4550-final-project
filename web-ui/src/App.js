@@ -1,6 +1,6 @@
 import './App.scss';
 import { Switch, Route } from 'react-router-dom';
-import Container from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import AppNav from './Nav';
 import Home from './Home';
 import UserList from './User/List';

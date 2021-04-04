@@ -1,7 +1,7 @@
-import { Alert, Button, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
-import { create_chore, fetch_group } from '../api';
+import { create_chore, fetch_user } from '../api';
 
 // create the base, unassigned chore first.
 function ChoreNewForm({session, user}) {
@@ -64,7 +64,7 @@ function ChoreNewForm({session, user}) {
 // access control
 function ChoreNew({session, user}) {
   if (user && user.group_id) {
-    return (<ChoreNewForm session={session} group={group}/>)
+    return (<ChoreNewForm session={session} user={user}/>)
   } else if (user) {
     return (<h6>Join or make a group to start making chores!</h6>)
   } else if (session) {
