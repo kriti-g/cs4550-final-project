@@ -11,6 +11,8 @@ defmodule RoommateAppWeb.InviteView do
   end
 
   def render("invite.json", %{invite: invite}) do
-    %{id: invite.id}
+    %{id: invite.id,
+      group: render_one(invite.group, RoommateAppWeb.GroupView, "group_limited.json"),
+      user: render_one(invite.user, RoommateAppWeb.UserView, "user_limited.json")}
   end
 end

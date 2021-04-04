@@ -9,6 +9,7 @@ defmodule RoommateApp.Chores.Chore do
     field :rotation, :integer
 
     belongs_to :group, RoommateApp.Groups.Group
+    has_many :responsibilities, RoommateApp.Responsibilities.Responsibility
 
     timestamps()
   end

@@ -4,6 +4,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
   alias RoommateApp.Responsibilities
   alias RoommateApp.Responsibilities.Responsibility
   alias RoommateAppWeb.Plugs
+  alias RoommateApp.Sms
 
   plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
   plug :require_group_member when action in [:show, :update, :delete]

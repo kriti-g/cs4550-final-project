@@ -12,34 +12,25 @@ function users(state = [], action) {
 
 function user(state = null, action) {
   switch (action.type) {
-    case "user/get":
+    case "user/set":
       return action.data;
     default:
       return state;
   }
 }
 
-function events(state = [], action) {
+function chore(state = null, action) {
   switch (action.type) {
-    case "events/set":
+    case "chore/set":
       return action.data;
     default:
       return state;
   }
 }
 
-function event(state = null, action) {
+function group(state = null, action) {
   switch (action.type) {
-    case "event/get":
-      return action.data;
-    default:
-      return state;
-  }
-}
-
-function user_form(state = {}, action) {
-  switch (action.type) {
-    case "user_form/set":
+    case "group/set":
       return action.data;
     default:
       return state;
@@ -76,7 +67,13 @@ function restore_session() {
     return null;
   }
 }
-
+/*
+session = {
+  user_id: user.id,
+  name: user.name,
+  token: Phoenix.Token.sign(conn, "user_id", user.id)
+}
+*/
 function session(state = restore_session(), action) {
   switch (action.type) {
     case "session/set":
@@ -94,10 +91,9 @@ function root_reducer(state, action) {
   let reducer = combineReducers({
     users,
     user,
-    user_form,
-    events,
-    event,
-    error,
+    chore,
+    group,
+    responsibility,
     session
   });
   return reducer(state, action);

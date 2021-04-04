@@ -19,6 +19,7 @@ defmodule RoommateApp.Users do
   """
   def list_users do
     Repo.all(User)
+    |> Repo.preload([responsibilities: :chore])
   end
 
   @doc """
@@ -35,7 +36,10 @@ defmodule RoommateApp.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload([responsibilities: :chore])
+  end
 
   def authenticate(email, pass) do
     user = Repo.get_by(User, email: email)

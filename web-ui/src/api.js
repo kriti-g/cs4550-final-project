@@ -76,16 +76,16 @@ export function fetch_users() {
 export function fetch_user(id) {
   api_get("/users/" + id).then((data) =>
     store.dispatch({
-      type: "user/get",
+      type: "user/set",
       data: data,
     })
   );
 }
 
-export function fetch_roommate_group(id) {
-  api_get("/rmgroup/" + id).then((data) =>
+export function fetch_group(id) {
+  api_get("/groups/" + id).then((data) =>
     store.dispatch({
-      type: "rmgroup/get",
+      type: "group/set",
       data: data,
     })
   );
@@ -94,7 +94,7 @@ export function fetch_roommate_group(id) {
 export function fetch_chores() {
   api_get("/chores/").then((data) =>
     store.dispatch({
-      type: "chores/get",
+      type: "chores/set",
       data: data,
     })
   );
@@ -103,7 +103,7 @@ export function fetch_chores() {
 export function fetch_chore(id) {
   api_get("/chores/" + id).then((data) =>
     store.dispatch({
-      type: "chore/get",
+      type: "chore/set",
       data: data,
     })
   );
@@ -112,44 +112,23 @@ export function fetch_chore(id) {
 export function fetch_responsibility(id) {
   api_get("/responsibilities/" + id).then((data) =>
     store.dispatch({
-      type: "responsibility/get",
+      type: "responsibility/set",
       data: data,
     })
   );
 }
 
 export function fetch_responsibilities() {
-  api_get("/responsibility/").then((data) =>
+  api_get("/responsibilities").then((data) =>
     store.dispatch({
-      type: "responsibility/get",
-      data: data,
-    })
-  );
-}
-
-// --- relic
-export function fetch_events() {
-  api_get("/events").then((data) =>
-    store.dispatch({
-      type: "events/set",
-      data: data,
-    })
-  );
-}
-
-export function fetch_event(id) {
-  api_get("/events/" + id).then((data) =>
-    store.dispatch({
-      type: "event/get",
+      type: "responsibilities/set",
       data: data,
     })
   );
 }
 
 export function load_defaults() {
-  // TODO: change this out.
-  //   fetch_users();
-  fetch_events();
+  fetch_users();
 }
 
 //   https://github.com/NatTuck/scratch-2021-01/blob/master/notes-4550/18-passwords/notes.md#adding-passwords-to-photoblog-branch-06-passwords

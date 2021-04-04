@@ -15,6 +15,7 @@ alias RoommateApp.Users.User
 alias RoommateApp.Groups.Group
 alias RoommateApp.Chores.Chore
 alias RoommateApp.Responsibilities.Responsibility
+alias RoommateApp.Invites.Invite
 
 defmodule Inject do
   def user(name, pass, email, num, group_id) do
@@ -25,8 +26,9 @@ end
 
 alicenbob = Repo.insert!(%Group{name: "Home in Boston", address: "333 Huntington, Boston MA", rotation_order: "[1,2]"})
 
-alice = Inject.user("Alice", "password1", "alice@email.com", "7777777777", alicenbob.id)
-_bob = Inject.user("Bob", "passwordd2", "bob@email.com", "6666666666", alicenbob.id)
+alice = Inject.user("Alice", "Password1", "alice@email.com", "7777777777", alicenbob.id)
+_bob = Inject.user("Bob", "Password1", "bob@email.com", "6666666666", alicenbob.id)
+carol = Inject.user("Carol", "Password1", "carol@email.com", "5555555555", nil)
 
 c1 = %Chore{
   name: "Washing dishes",
@@ -37,6 +39,13 @@ c1 = %Chore{
 }
 
 chore1 = Repo.insert!(c1)
+
+inv = %Invite{
+  user_id: carol.id,
+  group_id: alicenbob.id
+}
+
+Repo.insert!(inv)
 
 r1 = %Responsibility{
   completions: 1,

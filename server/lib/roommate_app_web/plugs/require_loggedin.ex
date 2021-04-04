@@ -10,10 +10,10 @@ defmodule RoommateAppWeb.Plugs.RequireLoggedIn do
       {:ok, user_id} ->
         user = RoommateApp.Users.get_user!(user_id) # find the assoc user
         assign(conn, :user, user) # assign the user to conn for easy access
-      {:error, err} ->
+      {:error, _err} ->
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
-        |> send_resp(:unauthorized, Jason.encode!(%{"error" => err}))
+        |> send_resp(:unauthorized, Jason.encode!(%{"error" => "Not signed in."}))
         |> halt()
     end
   end

@@ -15,6 +15,18 @@ defmodule RoommateAppWeb.ChoreView do
       name: chore.name,
       desc: chore.desc,
       rotation: chore.rotation,
-      frequency: chore.frequency}
+      frequency: chore.frequency,
+      responsibilities: render_many(chore.responsibilities, RoommateAppWeb.ResponsibilityView, "responsibility_nochore.json")
+    }
   end
+
+  def render("chore_limited.json", %{chore: chore}) do
+    %{id: chore.id,
+      name: chore.name,
+      desc: chore.desc,
+      rotation: chore.rotation,
+      frequency: chore.frequency
+    }
+  end
+
 end

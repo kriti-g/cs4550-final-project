@@ -19,6 +19,8 @@ defmodule RoommateApp.Groups do
   """
   def list_groups do
     Repo.all(Group)
+    |> Repo.preload([users: [responsibilities: :chore]])
+    |> Repo.preload([chores: [responsibilities: :user]])
   end
 
   @doc """
@@ -35,7 +37,11 @@ defmodule RoommateApp.Groups do
       ** (Ecto.NoResultsError)
 
   """
-  def get_group!(id), do: Repo.get!(Group, id)
+  def get_group!(id) do
+    Repo.get!(Group, id)
+    |> Repo.preload([users: [responsibilities: :chore]])
+    |> Repo.preload([chores: [responsibilities: :user]])
+  end
 
   @doc """
   Creates a group.
