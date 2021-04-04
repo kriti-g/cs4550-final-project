@@ -19,27 +19,18 @@ function user(state = null, action) {
   }
 }
 
-function events(state = [], action) {
+function chore(state = null, action) {
   switch (action.type) {
-    case "events/set":
+    case "chore/set":
       return action.data;
     default:
       return state;
   }
 }
 
-function event(state = null, action) {
+function group(state = null, action) {
   switch (action.type) {
-    case "event/get":
-      return action.data;
-    default:
-      return state;
-  }
-}
-
-function user_form(state = {}, action) {
-  switch (action.type) {
-    case "user_form/set":
+    case "group/get":
       return action.data;
     default:
       return state;
@@ -100,14 +91,9 @@ function root_reducer(state, action) {
   let reducer = combineReducers({
     users,
     user,
-    user_form,
-    group_chores,
     chore,
-    user_responsibilities,
-    group_responsibilities,
-    group_invites,
     group,
-    group_members,
+    responsibility,
     session
   });
   return reducer(state, action);
