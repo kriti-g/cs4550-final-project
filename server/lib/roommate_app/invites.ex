@@ -19,6 +19,7 @@ defmodule RoommateApp.Invites do
   """
   def list_invites do
     Repo.all(Invite)
+    |> Repo.preload([:group, :user])
   end
 
   @doc """
@@ -35,7 +36,10 @@ defmodule RoommateApp.Invites do
       ** (Ecto.NoResultsError)
 
   """
-  def get_invite!(id), do: Repo.get!(Invite, id)
+  def get_invite!(id) do
+    Repo.get!(Invite, id)
+    |> Repo.preload([:group, :user])
+  end
 
   @doc """
   Creates a invite.

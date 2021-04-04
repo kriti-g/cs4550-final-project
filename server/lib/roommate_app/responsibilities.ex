@@ -19,6 +19,7 @@ defmodule RoommateApp.Responsibilities do
   """
   def list_responsibilities do
     Repo.all(Responsibility)
+    |> Repo.preload([:user, :chore])
   end
 
   @doc """
@@ -35,7 +36,10 @@ defmodule RoommateApp.Responsibilities do
       ** (Ecto.NoResultsError)
 
   """
-  def get_responsibility!(id), do: Repo.get!(Responsibility, id)
+  def get_responsibility!(id) do
+    Repo.get!(Responsibility, id)
+    |> Repo.preload([:user, :chore])
+  end
 
   @doc """
   Creates a responsibility.

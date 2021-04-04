@@ -28,4 +28,5 @@ defmodule RoommateAppWeb.ChoreView do
       frequency: chore.frequency
     }
   end
+
 end

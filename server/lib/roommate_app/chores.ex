@@ -19,6 +19,7 @@ defmodule RoommateApp.Chores do
   """
   def list_chores do
     Repo.all(Chore)
+    |> Repo.preload([responsibilities: :user])
   end
 
   @doc """
@@ -35,7 +36,10 @@ defmodule RoommateApp.Chores do
       ** (Ecto.NoResultsError)
 
   """
-  def get_chore!(id), do: Repo.get!(Chore, id)
+  def get_chore!(id) do
+    Repo.get!(Chore, id)
+    |> Repo.preload([responsibilities: :user])
+  end
 
   @doc """
   Creates a chore.

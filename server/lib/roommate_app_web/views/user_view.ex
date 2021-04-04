@@ -15,7 +15,15 @@ defmodule RoommateAppWeb.UserView do
       name: user.name,
       email: user.email,
       group_id: user.group_id,
-      responsibilities: render_many(user.responsibilities, RoommateAppWeb.ResponsibilityView, "responsibility.json")
+      responsibilities: render_many(user.responsibilities, RoommateAppWeb.ResponsibilityView, "responsibility_nouser.json")
+    }
+  end
+
+  def render("user_limited.json", %{user: user}) do
+    %{id: user.id,
+      name: user.name,
+      email: user.email,
+      group_id: user.group_id,
     }
   end
 end
