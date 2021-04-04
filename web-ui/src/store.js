@@ -12,7 +12,7 @@ function users(state = [], action) {
 
 function user(state = null, action) {
   switch (action.type) {
-    case "user/get":
+    case "user/set":
       return action.data;
     default:
       return state;
@@ -30,7 +30,7 @@ function chore(state = null, action) {
 
 function group(state = null, action) {
   switch (action.type) {
-    case "group/get":
+    case "group/set":
       return action.data;
     default:
       return state;
