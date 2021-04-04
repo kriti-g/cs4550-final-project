@@ -37,6 +37,15 @@ function group(state = null, action) {
   }
 }
 
+function responsibility(state = null, action) {
+  switch (action.type) {
+    case "responsibility/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function error(state = null, action) {
   switch (action.type) {
     case "session/set":
@@ -67,6 +76,7 @@ function restore_session() {
     return null;
   }
 }
+
 /*
 session = {
   user_id: user.id,

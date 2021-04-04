@@ -12,7 +12,7 @@ function ShowChore({chore, session}) {
                     </li>
                     <li>
                         <strong>Description:</strong>
-                        {chore.description}
+                        {chore.desc}
                     </li>
                     <li>
                         <strong>Rotation:</strong>
@@ -23,16 +23,12 @@ function ShowChore({chore, session}) {
                         {chore.frequency}
                     </li>
                     <li>
-                        <strong>Group:</strong>
-                        {chore.group.name}
-                    </li>
-                    <li>
                         <strong>Responsible:</strong>
                         <ul>
-                            {chore.responsible.map((rsp) => {
+                            {chore.responsibilities.map((rsp) => {
                                 return (
                                     <li>
-                                        {rsp.name}
+                                        {rsp.user.name}
                                     </li>
                                 );
                             })}

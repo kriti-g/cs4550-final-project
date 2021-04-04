@@ -4,6 +4,16 @@ import { connect } from 'react-redux';
 import { useState } from 'react';
 import { api_login } from './api';
 
+function Link({to, children}) {
+  return (
+    <Nav.Item>
+      <NavLink to={to} exact className="nav-link" activeClassName="active">
+        {children}
+      </NavLink>
+    </Nav.Item>
+  );
+}
+
 let SessionInfo = connect()(({session, dispatch}) => {
     function logout() {
         dispatch({type: "session/clear"})
@@ -11,7 +21,7 @@ let SessionInfo = connect()(({session, dispatch}) => {
 
     return (
         <Nav>
-            <NavLink to="">Groups</NavLink>
+            <Link to="">Group</Link>
             <Navbar.Text>
                 User: {session.name} &nbsp;
             </Navbar.Text>
@@ -29,7 +39,7 @@ function Login() {
     }
     return (
         <Nav>
-            <NavLink to="">Register</NavLink>
+            <Link to="">Register</Link>
             <Form onSubmit={onSubmit} inline>
                 <Form.Control name="email"
                               type="email"
@@ -70,8 +80,7 @@ function AppNav({error}) {
             <Row>
                 <Navbar variant="light">
                     <Nav>
-                        <NavLink to="/">Home</NavLink>
-                        <NavLink to="/group"></NavLink>
+                        <Link to="/">Home</Link>
                     </Nav>
                     <LoginOrLogoutNav />
                 </Navbar>
