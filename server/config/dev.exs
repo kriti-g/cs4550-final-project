@@ -22,6 +22,11 @@ config :roommate_app, RoommateAppWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "PATCH", "DELETE"]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

@@ -60,7 +60,7 @@ async function api_delete(path, data) {
   };
 
   let text = await fetch("http://localhost:4000/api/v1" + path, opts);
-  return await text;
+  return await text.json();
 }
 
 // TODO:  fetch functions may change over time depending on need.
