@@ -4,6 +4,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
   alias RoommateApp.Responsibilities
   alias RoommateApp.Responsibilities.Responsibility
   alias RoommateAppWeb.Plugs
+  alias RoommateApp.Sms
 
   plug Plugs.RequireLoggedIn when action in [:show, :update, :delete, :create]
   plug :require_group_member when action in [:show, :update, :delete]
@@ -33,6 +34,16 @@ defmodule RoommateAppWeb.ResponsibilityController do
     if is_group_member(user, responsibility_params) do
       case Responsibilities.create_responsibility(responsibility_params) do
         {:ok, %Responsibility{} = responsibility} ->
+
+          # warning, may need to preload chore
+          chore_name = responsibility.chore.name
+          chore_deadline_str = Integer.to_string(responsibility.deadline.month) <> "/" <> Integer.to_string(responsibility.deadline.day) <> "/" <> Integer.to_string(responsibility.deadline.year)
+          # TODO : chore_deadline, format it so it says "...in x days: 3/31/2021."
+          # howto; deadline - current_time for " ... x days"
+
+          msg = chore_name <> " is due: " <> chore_deadline <> "."
+          Sms.sendSMS(%{"phone"=> user.phone_number, "msg" => msg})
+
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.responsibility_path(conn, :show, responsibility))
