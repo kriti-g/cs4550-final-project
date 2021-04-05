@@ -2,8 +2,9 @@ import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 
+import { create_group, fetch_user } from '../api';
 
-function GroupNew() {
+function GroupNewForm({session, user}) {
     const [group, setGroup] = useState({
         name: "",
         members: []
@@ -12,7 +13,7 @@ function GroupNew() {
 
     function onSubmit(event){
         event.preventDefault();
-        // TODO
+        create_group(group);
     }
 
     function update(field, event) {
@@ -46,8 +47,16 @@ function GroupNew() {
 }
 
 
-function states2prop(_states) {
-    return {};
+
+function GroupNew({session, user}){
+  if (user) {
+    return (<GroupNewForm session={session} user={user}/>)
+  } else if (session) {
+    fetch_user(session.user_id)
+    return (<h6>Loading user information...</h6>)
+  } else {
+    return (<h6>Sign up or login to start making chores!</h6>)
+  }
 }
 
-export default connect(states2prop)(GroupNew);
+export default connect(({session, user}) => ({session, user}))(GroupNew);

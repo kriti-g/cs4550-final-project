@@ -25,7 +25,8 @@ config :roommate_app, RoommateAppWeb.Endpoint,
 config :cors_plug,
   origin: ["http://localhost:3000"],
   max_age: 86400,
-  methods: ["GET", "POST", "PATCH", "DELETE"]
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  headers: ["Content-Type", "Session-Token"]
 
 # ## SSL Support
 #

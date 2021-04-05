@@ -7,7 +7,7 @@ import pick from 'lodash/pick';
 import store from "../store";
 
 
-function UserNew() {
+function UserNewForm() {
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -52,10 +52,18 @@ function UserNew() {
         return "";
     }
 
+    function confirm_validator(val) {
+        if(val !== user.password) {
+            return "Passwords don't match";
+        }
+        return "";
+    }
+
     const validators = {
         email: email_validator,
         phone: phone_validator,
         password: password_validator,
+        password_confirm: confirm_validator
     }
 
     function submit_ready() {
@@ -71,10 +79,10 @@ function UserNew() {
     function onSubmit(event){
         event.preventDefault();
         let data = pick(user, ["name", "email", "phone_number", "password"]);
-        create_user(user).then((data) => {
-          if (data.error) {
+        create_user(data).then((rsp) => {
+          if (rsp.error) {
             // if receiving an error, display it.
-            store.dispatch({type: "error/set", data: data.error});
+            store.dispatch({type: "error/set", data: rsp.error});
           } else {
             // store.dispatch({type: "user/set", data: data.data});
             // api_login(data.data.email, user["password"]);
@@ -89,10 +97,28 @@ function UserNew() {
         usr[field] = val;
         let validator = validators[field];
         if(validator) {
-            usr[field + "_msg"] = validator(val);
+            let target = field + "_msg";
+            if(field === "password_confirm") {
+                target = "password_msg";
+            }
+            usr[target] = validator(val);
         }
         setUser(usr);
     }
+
+    let email_alert = null;
+    let pnumber_alert = null;
+    let password_alert = null;
+    if(user.email_msg !== "") {
+        email_alert = (<Alert key="email_alert" variant="danger">{user.email_msg}</Alert>);
+    }
+    if(user.phone_number_msg !== "") {
+        pnumber_alert = (<Alert key="pnumber_alert" variant="danger">{user.phone_number_msg}</Alert>);
+    }
+    if(user.password_msg !== ""){
+        password_alert = (<Alert key="password_alert" variant="danger">{user.password_msg}</Alert>);
+    }
+    
 
     return (
         <Form onSubmit={onSubmit}>
@@ -107,21 +133,21 @@ function UserNew() {
                 <Form.Control type="email"
                               onChange={(ev) => update("email", ev)}
                               value={user.email}/>
-                <Alert key="email_alert" variant="danger">{user.email_msg}</Alert>
+                {email_alert}
             </Form.Group>
             <Form.Group>
                 <Form.Label>Phone Number</Form.Label>
                 <Form.Control type="tel"
                               onChange={(ev) => update("phone_number", ev)}
                               value={user.phone_number}/>
-                <Alert key="pnumber_alert" variant="danger">{user.phone_number_msg}</Alert>
+                {pnumber_alert} 
             </Form.Group>
             <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password"
                               onChange={(ev) => update("password", ev)}
                               value={user.password}/>
-                <Alert key="password_alert" variant="danger">{user.password_msg}</Alert>
+                {password_alert}
             </Form.Group>
             <Form.Group>
                 <Form.Label>Confirm Password</Form.Label>
@@ -129,15 +155,25 @@ function UserNew() {
                               onChange={(ev) => update("password_confirm", ev)}
                               value={user.password_confirm}/>
             </Form.Group>
-            <Button variant="primary" type="submit" disabled={submit_ready()}>
+            <Button variant="primary" type="submit" disabled={!submit_ready()}>
                 Save
             </Button>
         </Form>
     );
 }
 
-function states2prop(_states) {
-    return {};
+
+function UserNew({session}) {
+    console.log("User New")
+    if(session) {
+        return (<h6>Already Signed In</h6>);
+    } else {
+        return (<UserNewForm/>);
+    }
+}
+
+function states2prop({session}) {
+    return {session};
 }
 
 export default connect(states2prop)(UserNew);

@@ -1,7 +1,10 @@
 import { Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { useRouteMatch } from 'react-router-dom';
 
-function ShowChore({chore, session}) {
+import { fetch_chore } from '../api';
+
+function ShowOneChore({chore, session}) {
     return (
         <Row>
             <Col>
@@ -38,6 +41,21 @@ function ShowChore({chore, session}) {
             </Col>
         </Row>
     );
+}
+
+function ShowChore({chore, session}){
+    let match = useRouteMatch();
+    let id = match.params.id;
+    if(chore && chore.id === id && chore.group.users.includes(session.user_id)) { // TODO
+        return (<ShowOneChore chore={chore} session={session}/>);
+    } else if(chore && chore.id === id) {
+        return (<h6>You don't have access to this chore</h6>);
+    } else if(session) {
+        fetch_chore(id);
+        return (<h6>Loading Chore...</h6>);
+    } else {
+        return (<h6>You must be signed in to view this chore</h6>);
+    }
 }
 
 

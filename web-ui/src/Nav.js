@@ -21,7 +21,7 @@ let SessionInfo = connect()(({session, dispatch}) => {
 
     return (
         <Nav>
-            <Link to="">Group</Link>
+            <Link to="/groups">Groups</Link>
             <Navbar.Text>
                 User: {session.name} &nbsp;
             </Navbar.Text>
@@ -39,7 +39,7 @@ function Login() {
     }
     return (
         <Nav>
-            <Link to="">Register</Link>
+            <Link to="/users/new">Register</Link>
             <Form onSubmit={onSubmit} inline>
                 <Form.Control name="email"
                               type="email"
@@ -52,7 +52,7 @@ function Login() {
                               placeholder="Password"
                               value={password} />
                 <Button variant="outline-secondary" type="submit">
-                    LogIn
+                    Log In
                 </Button>
             </Form>
         </Nav>
@@ -70,6 +70,7 @@ function LOI({session}) {
 const LoginOrLogoutNav = connect(({session}) => ({session}))(LOI);
 
 function AppNav({error}) {
+    console.log("AppNav", error)
     let error_row = null;
     if(error) {
         error_row = (<Alert variant="danger">{error}</Alert>)
