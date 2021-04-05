@@ -104,6 +104,7 @@ function root_reducer(state, action) {
     chore,
     group,
     responsibility,
+    error,
     session
   });
   return reducer(state, action);

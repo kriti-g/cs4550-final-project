@@ -13,10 +13,15 @@ defmodule RoommateAppWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api/v1", RoommateAppWeb do
+  scope "/", RoommateAppWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/api/v1", RoommateAppWeb do
+    pipe_through :api
+
     resources "/groups", GroupController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
     resources "/chores", ChoreController, except: [:new, :edit]
