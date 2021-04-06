@@ -3,6 +3,7 @@ defmodule RoommateAppWeb.InviteController do
 
   alias RoommateApp.Invites
   alias RoommateApp.Invites.Invite
+  alias RoommateApp.Users
   alias RoommateAppWeb.Plugs
 
   plug Plugs.RequireLoggedIn when action in [:show, :delete, :create]
@@ -28,11 +29,19 @@ defmodule RoommateAppWeb.InviteController do
     render(conn, "index.json", invites: invites)
   end
 
-  def create(conn, %{"invite" => invite_params}) do
+  def create(conn, %{"invite" => invite_paras}) do
     user = conn.assigns[:user]
-    if is_group_member(user, invite_params) do
+    email = invite_paras["user_email"]
+    invitee = Users.get_user_by_email(email)
+    invite_params = if invitee do
+      Map.put(invite_paras, "user_id", invitee.id)
+    else
+      invite_paras
+    end
+    if is_group_member(user, invite_params) && invitee do
       case Invites.create_invite(invite_params) do
-        {:ok, %Invite{} = invite} ->
+        {:ok, %Invite{} = inv} ->
+          invite = Invites.load_group_user(inv)
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.invite_path(conn, :show, invite))

@@ -21,7 +21,8 @@ let SessionInfo = connect()(({session, dispatch}) => {
 
     return (
         <Nav>
-            <Link to="/groups">Groups</Link>
+            <Link to="/group">My Group</Link>
+
             <Navbar.Text>
                 User: {session.name} &nbsp;
             </Navbar.Text>

@@ -22,6 +22,10 @@ defmodule RoommateApp.Responsibilities do
     |> Repo.preload([:user, :chore])
   end
 
+  def load_user_chore(%Responsibility{} = resp) do
+    Repo.preload(resp, [:user, :chore])
+  end
+
   @doc """
   Gets a single responsibility.
 

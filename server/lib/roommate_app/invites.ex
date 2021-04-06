@@ -22,6 +22,9 @@ defmodule RoommateApp.Invites do
     |> Repo.preload([:group, :user])
   end
 
+  def load_group_user(%Invite{} = invite) do
+    Repo.preload(invite, [:group, :user])
+  end
   @doc """
   Gets a single invite.
 

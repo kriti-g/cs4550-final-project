@@ -32,7 +32,8 @@ defmodule RoommateAppWeb.ChoreController do
     user = conn.assigns[:user]
     if is_group_member(user, chore_params) do
       case Chores.create_chore(chore_params) do
-        {:ok, %Chore{} = chore} ->
+        {:ok, %Chore{} = cho} ->
+          chore = Chores.load_resp_user(cho)
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.chore_path(conn, :show, chore))

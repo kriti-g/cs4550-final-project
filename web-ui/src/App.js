@@ -10,7 +10,7 @@ import ShowUser from './User/Show';
 import ChoreList from './Chore/List';
 import ChoreNew from './Chore/New';
 import ShowChore from './Chore/Show';
-import GroupList from './Group/List';
+//import GroupList from './Group/List';
 import GroupNew from './Group/New';
 import ShowGroup from './Group/Show';
 
@@ -25,10 +25,9 @@ function App() {
         <Route path="/users/:id" component={ShowUser} exact/>
         <Route path="/chores" component={ChoreList} exact/>
         <Route path="/chores/new" component={ChoreNew} exact/>
-        <Route path="/groups" component={GroupList} exact/>
         <Route path="/chores/:id" component={ShowChore} exact/>
         <Route path="/groups/new" component={GroupNew} exact/>
-        <Route path="/groups/:id" component={ShowGroup} exact/>
+        <Route path="/group" component={ShowGroup} exact/>
       </Switch>
     </Container>
   );

@@ -19,8 +19,19 @@ defmodule RoommateApp.Groups do
   """
   def list_groups do
     Repo.all(Group)
+    |> Repo.preload([users: [responsibilities: :chore], chores: [responsibilities: :user], invites: :user])
+  end
+
+  def preload_invites(group) do
+    group
+    |> Repo.preload([invites: :user])
+  end
+
+  def preload_users_chores(%Group{} = group) do
+    group
     |> Repo.preload([users: [responsibilities: :chore]])
     |> Repo.preload([chores: [responsibilities: :user]])
+    |> Repo.preload([invites: :user])
   end
 
   @doc """
@@ -41,6 +52,7 @@ defmodule RoommateApp.Groups do
     Repo.get!(Group, id)
     |> Repo.preload([users: [responsibilities: :chore]])
     |> Repo.preload([chores: [responsibilities: :user]])
+    |> Repo.preload([invites: :user])
   end
 
   @doc """

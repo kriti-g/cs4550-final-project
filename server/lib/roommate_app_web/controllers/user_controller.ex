@@ -50,6 +50,7 @@ defmodule RoommateAppWeb.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
+    IO.inspect(user_params)
     user = Users.get_user!(id)
 
     case Users.update_user(user, user_params) do
