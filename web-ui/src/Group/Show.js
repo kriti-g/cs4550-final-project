@@ -56,6 +56,7 @@ function ShowOneGroup({group, session, user}) {
   );
 }
 
+
 function NewInvite({ group }) {
   let [inv, setInvite] = useState({});
 
@@ -99,7 +100,6 @@ function NewInvite({ group }) {
 }
 
 function LeaveGroupOption({user}) {
-
   function leave_group() {
     let params = { id: user.id, group_id: -1 };
     update_user(params).then((rsp) => {
@@ -179,6 +179,7 @@ function NewGroupOption({ user }) {
     </div>
   );
 }
+
 
 function ShowGroup({group, user, session}) {
     if (session && user && group && group.id === user.group_id) {
