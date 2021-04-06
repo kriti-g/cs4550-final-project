@@ -84,8 +84,7 @@ function UserNewForm() {
             // if receiving an error, display it.
             store.dispatch({type: "error/set", data: rsp.error});
           } else {
-            // store.dispatch({type: "user/set", data: data.data});
-            // api_login(data.data.email, user["password"]);
+            api_login(user["email"], user["password"]);
             history.push("/");
           }
         })
@@ -118,7 +117,7 @@ function UserNewForm() {
     if(user.password_msg !== ""){
         password_alert = (<Alert key="password_alert" variant="danger">{user.password_msg}</Alert>);
     }
-    
+
 
     return (
         <Form onSubmit={onSubmit}>
@@ -140,7 +139,7 @@ function UserNewForm() {
                 <Form.Control type="tel"
                               onChange={(ev) => update("phone_number", ev)}
                               value={user.phone_number}/>
-                {pnumber_alert} 
+                {pnumber_alert}
             </Form.Group>
             <Form.Group>
                 <Form.Label>Password</Form.Label>

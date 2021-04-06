@@ -41,6 +41,10 @@ defmodule RoommateApp.Chores do
     |> Repo.preload([responsibilities: :user])
   end
 
+  def load_resp_user(%Chore{} = chore) do
+    Repo.preload(chore, [responsibilities: :user])
+  end
+
   @doc """
   Creates a chore.
 

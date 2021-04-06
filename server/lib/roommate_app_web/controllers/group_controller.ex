@@ -2,6 +2,7 @@ defmodule RoommateAppWeb.GroupController do
   use RoommateAppWeb, :controller
 
   alias RoommateApp.Groups
+  alias RoommateApp.Users
   alias RoommateApp.Groups.Group
   alias RoommateAppWeb.Plugs
 
@@ -41,8 +42,12 @@ defmodule RoommateAppWeb.GroupController do
   end
 
   def create(conn, %{"group" => group_params}) do
+    IO.inspect(group_params)
     case Groups.create_group(group_params) do
-      {:ok, %Group{} = group} ->
+      {:ok, %Group{} = grou} ->
+        group = Groups.preload_users_chores(grou)
+        user = conn.assigns[:user]
+        Users.update_user(user, %{"group_id" => group.id})
         conn
         |> put_status(:created)
         |> put_resp_header("location", Routes.group_path(conn, :show, group))
