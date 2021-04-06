@@ -12,7 +12,7 @@ function Home({session, user}) {
         </li>
       );
     });
-    
+
     home = (
       <>
       <h4>Your responsibilities:</h4>
