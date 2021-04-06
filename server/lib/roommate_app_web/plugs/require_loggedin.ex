@@ -1,11 +1,10 @@
 defmodule RoommateAppWeb.Plugs.RequireLoggedIn do
-  use RoommateAppWeb, :controller
-    #import Plug.Conn
+  import Plug.Conn
 
   def init(args), do: args
 
   def call(conn, _args) do
-    token = Enum.at(get_req_header(conn, "Session-Token"), 0)
+    token = Enum.at(get_req_header(conn, "session-token"), 0)
     case Phoenix.Token.verify(conn, "user_id", token, max_age: 86400) do
       {:ok, user_id} ->
         user = RoommateApp.Users.get_user!(user_id) # find the assoc user

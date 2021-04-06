@@ -63,9 +63,9 @@ function ChoreNewForm({session, user}) {
 
 // access control
 function ChoreNew({session, user}) {
-  if (user && user.group_id) {
+  if (session && user && user.group_id) {
     return (<ChoreNewForm session={session} user={user}/>)
-  } else if (user) {
+  } else if (session && user) {
     return (<h6>Join or make a group to start making chores!</h6>)
   } else if (session) {
     fetch_user(session.user_id)

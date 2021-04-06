@@ -7,8 +7,8 @@ function Home({session, user}) {
   if(user) {
     let chores = user.responsibilities.map((resp) => {
       return (
-        <li>
-        {resp.chore.name} - {resp.deadline}
+        <li key={resp.id}>
+        {resp.chore.name} due at {resp.deadline}.
         </li>
       );
     });

@@ -9,7 +9,7 @@ function GroupNewForm({session, user}) {
         name: "",
         members: []
     });
-    let user_options = null; 
+    let user_options = null;
 
     function onSubmit(event){
         event.preventDefault();

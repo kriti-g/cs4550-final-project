@@ -58,8 +58,12 @@ function error(state = null, action) {
 }
 
 function save_session(sess) {
-  let session = Object.assign({}, sess, { time: Date.now() });
-  localStorage.setItem("session", JSON.stringify(session));
+  if (sess) {
+    let session = Object.assign({}, sess, { time: Date.now() });
+    localStorage.setItem("session", JSON.stringify(session));
+  } else {
+    localStorage.removeItem("session");
+  }
 }
 
 function restore_session() {
@@ -90,6 +94,8 @@ function session(state = restore_session(), action) {
       save_session(action.data);
       return action.data;
     case "session/clear":
+      // kill the stored session
+      save_session(null);
       return null;
     default:
       return state;
@@ -97,7 +103,10 @@ function session(state = restore_session(), action) {
 }
 
 function root_reducer(state, action) {
-  console.log("root_reducer", state, action);
+  if (action.type === "session/clear") {
+    // reset the cache when you log out so that user data isn't shared
+    state = undefined;
+  }
   let reducer = combineReducers({
     users,
     user,
@@ -107,6 +116,7 @@ function root_reducer(state, action) {
     error,
     session
   });
+  console.log("root_reducer", state, action);
   return reducer(state, action);
 }
 
