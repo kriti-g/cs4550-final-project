@@ -30,6 +30,7 @@ defmodule RoommateAppWeb.ChoreController do
 
   def create(conn, %{"chore" => chore_params}) do
     user = conn.assigns[:user]
+    IO.inspect([:chore_create, user, chore_params])
     if is_group_member(user, chore_params) do
       case Chores.create_chore(chore_params) do
         {:ok, %Chore{} = cho} ->
