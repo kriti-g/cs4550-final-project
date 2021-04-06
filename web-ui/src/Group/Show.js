@@ -7,17 +7,17 @@ import store from "../store";
 
 import { fetch_group, fetch_user, update_user, delete_invite, create_invite } from '../api';
 
-function ShowOneGroup({group, session}) {
+function ShowOneGroup({group, session, user}) {
     let member_list = group.users.map((usr) => {
         return (
-            <li>
+            <li key={usr.id}>
                 {usr.name}
             </li>
         );
     });
     let chore_list = group.chores.map((chr) => {
         return (
-            <li>
+            <li key={chr.id}>
                 {chr.name}
             </li>
         );
@@ -45,6 +45,7 @@ function ShowOneGroup({group, session}) {
                     </ul>
                 </Col>
                 <Col sm={4}>
+                  <LeaveGroupOption user={user}/>
                   <NewInvite group={group}/>
                   <h5>Members</h5>
                   <ul>
@@ -58,6 +59,32 @@ function ShowOneGroup({group, session}) {
             </Row>
         </div>
     );
+}
+
+function LeaveGroupOption({user}) {
+
+  function leave_group() {
+    let params = { id: user.id, group_id: -1 };
+    update_user(params).then((rsp) => {
+      if (rsp.error) {
+        // if receiving an error, display it.
+        store.dispatch({type: "error/set", data: rsp.error});
+      } else {
+        // update this user
+        store.dispatch({type: "user/set", data: rsp.data})
+        // clear group information from cache
+        store.dispatch({type: "group/clear", data: null});
+      }
+    });
+  }
+
+  return (
+    <p>
+      <Button variant="danger" onClick={(ev) => leave_group() }>
+        Leave Group
+      </Button>
+    </p>
+  );
 }
 
 function NewInvite({group}) {
@@ -89,7 +116,7 @@ function NewInvite({group}) {
         <Form onSubmit={onSubmit}>
           <Form.Group>
             <Form.Control type="email"
-                          placeholder="Type a new invitee's email..."
+                          placeholder="Type a new member's email..."
                           onChange={email => { updateEmail(email); }}
                           value={inv.user_email} />
           </Form.Group>
@@ -114,9 +141,9 @@ function NewGroupOption({user}) {
         store.dispatch({type: "error/set", data: rsp.error});
       } else {
         // delete the accepted invite
-        delete_invite(inv_id);
+        //delete_invite(inv_id);
         // update this user
-        fetch_user(user.id);
+        store.dispatch({type: "user/set", data: rsp.data})
       }
     });
   }
@@ -156,7 +183,7 @@ function NewGroupOption({user}) {
 
 function ShowGroup({group, user, session}) {
     if (session && user && group && group.id === user.group_id) {
-      return (<ShowOneGroup group={group} session={session}/>);
+      return (<ShowOneGroup group={group} session={session} user={user}/>);
     } else if (session && user && group) {
       // jic somehow there is a cached group that the user can't access??? edge case
       return (<h6>You don't have access to this group. Please try logging out and logging in.</h6>);

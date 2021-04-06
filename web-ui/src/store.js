@@ -23,6 +23,8 @@ function chore(state = null, action) {
   switch (action.type) {
     case "chore/set":
       return action.data;
+    case "group/clear":
+      return null;
     default:
       return state;
   }
@@ -32,6 +34,8 @@ function group(state = null, action) {
   switch (action.type) {
     case "group/set":
       return action.data;
+    case "group/clear":
+      return null;
     default:
       return state;
   }
@@ -41,6 +45,8 @@ function responsibility(state = null, action) {
   switch (action.type) {
     case "responsibility/set":
       return action.data;
+    case "group/clear":
+      return null;
     default:
       return state;
   }
