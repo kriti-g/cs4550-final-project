@@ -41,6 +41,10 @@ defmodule RoommateApp.Users do
     |> Repo.preload([responsibilities: :chore])
   end
 
+  def load_resp_chores(%User{} = user) do
+    Repo.preload(user, [responsibilities: :chore])
+  end
+
   def authenticate(email, pass) do
     user = Repo.get_by(User, email: email)
     case Argon2.check_pass(user, pass) do
@@ -62,9 +66,9 @@ defmodule RoommateApp.Users do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    new = User.changeset(%User{}, attrs)
+    IO.inspect(new)
+    Repo.insert(new)
   end
 
   @doc """
