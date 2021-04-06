@@ -25,6 +25,11 @@ defmodule RoommateApp.Invites do
   def load_group_user(%Invite{} = invite) do
     Repo.preload(invite, [:group, :user])
   end
+
+  def delete_all_for_user(uid) do
+    from(inv in Invite, where: inv.user_id == ^uid) 
+    |> Repo.delete_all
+  end
   @doc """
   Gets a single invite.
 
