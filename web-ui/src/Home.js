@@ -12,10 +12,14 @@ function Home({session, user}) {
         </li>
       );
     });
+    
     home = (
+      <>
+      <h4>Your responsibilities:</h4>
       <ul>
       {chores}
       </ul>
+      </>
     );
   } else if (session) {
     fetch_user(session.user_id);
