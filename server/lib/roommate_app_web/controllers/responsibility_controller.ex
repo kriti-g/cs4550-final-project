@@ -33,7 +33,8 @@ defmodule RoommateAppWeb.ResponsibilityController do
     user = conn.assigns[:user]
     if is_group_member(user, responsibility_params) do
       case Responsibilities.create_responsibility(responsibility_params) do
-        {:ok, %Responsibility{} = responsibility} ->
+        {:ok, %Responsibility{} = resp} ->
+          responsibility = Responsibilities.load_user_chore(resp)
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.responsibility_path(conn, :show, responsibility))

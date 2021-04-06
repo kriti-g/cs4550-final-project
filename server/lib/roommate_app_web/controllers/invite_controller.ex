@@ -32,7 +32,8 @@ defmodule RoommateAppWeb.InviteController do
     user = conn.assigns[:user]
     if is_group_member(user, invite_params) do
       case Invites.create_invite(invite_params) do
-        {:ok, %Invite{} = invite} ->
+        {:ok, %Invite{} = inv} ->
+          invite = Invites.load_group_user(inv)
           conn
           |> put_status(:created)
           |> put_resp_header("location", Routes.invite_path(conn, :show, invite))

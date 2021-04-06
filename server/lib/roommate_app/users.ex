@@ -67,7 +67,6 @@ defmodule RoommateApp.Users do
   """
   def create_user(attrs \\ %{}) do
     new = User.changeset(%User{}, attrs)
-    IO.inspect(new)
     Repo.insert(new)
   end
 

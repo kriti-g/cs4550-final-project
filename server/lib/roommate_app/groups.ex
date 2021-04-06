@@ -23,6 +23,12 @@ defmodule RoommateApp.Groups do
     |> Repo.preload([chores: [responsibilities: :user]])
   end
 
+  def preload_users_chores(%Group{} = group) do
+    group
+    |> Repo.preload([users: [responsibilities: :chore]])
+    |> Repo.preload([chores: [responsibilities: :user]])
+  end
+
   @doc """
   Gets a single group.
 
