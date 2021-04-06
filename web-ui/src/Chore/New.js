@@ -23,9 +23,7 @@ function ChoreNewForm({session, user}) {
         let ch = Object.assign({}, chore);
         ch["group_id"] = user.group_id;
         setChore(ch);
-        console.log("chore", chore)
         create_chore(chore).then((rsp) => {
-          console.log("rsp", rsp)
           if (rsp.error) {
             // if receiving an error, display it.
             store.dispatch({type: "error/set", data: rsp.error});
