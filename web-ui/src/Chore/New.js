@@ -1,7 +1,10 @@
 import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { create_chore, fetch_user } from '../api';
+import store from "../store";
+
 
 // create the base, unassigned chore first.
 function ChoreNewForm({session, user}) {
@@ -10,15 +13,24 @@ function ChoreNewForm({session, user}) {
         desc: "",
         rotation: 0,
         frequency: 0,
-        group_id: 0,
+        group_id: user.group_id,
     });
+    let history = useHistory();
+
 
     function onSubmit(event){
         event.preventDefault();
         let ch = Object.assign({}, chore);
         ch["group_id"] = user.group_id;
         setChore(ch);
-        create_chore(chore);
+        create_chore(chore).then((rsp) => {
+          if (rsp.error) {
+            // if receiving an error, display it.
+            store.dispatch({type: "error/set", data: rsp.error});
+          } else {
+            history.push("/group");
+          }
+        })
     }
 
     function update(field, event) {

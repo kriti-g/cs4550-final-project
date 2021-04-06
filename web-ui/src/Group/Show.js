@@ -1,93 +1,62 @@
-import { Col, Row, Form, Button } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { Col, Row, Form, Button } from "react-bootstrap";
+import { connect } from "react-redux";
+import { useState } from "react";
+import { useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 import store from "../store";
 
-import { fetch_group, fetch_user, update_user, delete_invite, create_invite } from '../api';
+import {
+  fetch_group,
+  fetch_user,
+  update_user,
+  delete_invite,
+  create_invite,
+} from "../api";
 
 function ShowOneGroup({group, session, user}) {
-    let member_list = group.users.map((usr) => {
-        return (
-            <li key={usr.id}>
-                {usr.name}
-            </li>
-        );
-    });
-    let chore_list = group.chores.map((chr) => {
-        return (
-            <li key={chr.id}>
-                {chr.name}
-            </li>
-        );
-    });
-    let invite_list = group.invites.map((inv) => {
-        return (
-            <li key={inv.id}>
-                {inv.user.name}
-            </li>
-        );
-    });
-    return (
-        <div>
-            <Row>
-                <Col>
-                    <h2>{group.name}</h2>
-                </Col>
-                <Col></Col>
-            </Row>
-            <Row>
-                <Col sm={8}>
-                    <h5>Chores</h5>
-                    <ul>
-                        {chore_list}
-                    </ul>
-                </Col>
-                <Col sm={4}>
-                  <LeaveGroupOption user={user}/>
-                  <NewInvite group={group}/>
-                  <h5>Members</h5>
-                  <ul>
-                      {member_list}
-                  </ul>
-                  <h5>Pending Invites</h5>
-                  <ul>
-                      {invite_list}
-                  </ul>
-                </Col>
-            </Row>
-        </div>
-    );
-}
-
-function LeaveGroupOption({user}) {
-
-  function leave_group() {
-    let params = { id: user.id, group_id: -1 };
-    update_user(params).then((rsp) => {
-      if (rsp.error) {
-        // if receiving an error, display it.
-        store.dispatch({type: "error/set", data: rsp.error});
-      } else {
-        // update this user
-        store.dispatch({type: "user/set", data: rsp.data})
-        // clear group information from cache
-        store.dispatch({type: "group/clear", data: null});
-      }
-    });
-  }
-
+  let member_list = group.users.map((usr) => {
+    return <li>{usr.name}</li>;
+  });
+  let chore_list = group.chores.map((chr) => {
+    return <li>{chr.name}</li>;
+  });
+  let invite_list = group.invites.map((inv) => {
+    return <li key={inv.id}>{inv.user.name}</li>;
+  });
   return (
-    <p>
-      <Button variant="danger" onClick={(ev) => leave_group() }>
-        Leave Group
-      </Button>
-    </p>
+    <div>
+      <Row>
+        <Col>
+          <h2>{group.name}</h2>
+        </Col>
+        <Col></Col>
+      </Row>
+      <Row>
+        <Col sm={8}>
+          <h5>
+            Chores
+            <span>
+              <Link to={"/chores/new/"}>   [Add +]</Link>
+            </span>
+          </h5>
+          <ul>{chore_list}</ul>
+        </Col>
+        <Col sm={4}>
+          <LeaveGroupOption user={user}/>
+          <NewInvite group={group} />
+          <h5>Members</h5>
+          <ul>{member_list}</ul>
+          <h5>Pending Invites</h5>
+          <ul>{invite_list}</ul>
+        </Col>
+      </Row>
+    </div>
   );
 }
 
-function NewInvite({group}) {
+function NewInvite({ group }) {
   let [inv, setInvite] = useState({});
 
   function onSubmit(ev) {
@@ -96,7 +65,7 @@ function NewInvite({group}) {
     create_invite(inv).then((rsp) => {
       if (rsp.error) {
         // if receiving an error, display it.
-        store.dispatch({type: "error/set", data: rsp.error});
+        store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         // update this group
         fetch_group(group.id);
@@ -129,16 +98,41 @@ function NewInvite({group}) {
   );
 }
 
+function LeaveGroupOption({user}) {
 
-function NewGroupOption({user}) {
-  let history = useHistory();
-
-  function joinGroup(group_id, inv_id) {
-    let update_params = { id: user.id, group_id: group_id }
-    update_user(update_params).then((rsp) => {
+  function leave_group() {
+    let params = { id: user.id, group_id: -1 };
+    update_user(params).then((rsp) => {
       if (rsp.error) {
         // if receiving an error, display it.
         store.dispatch({type: "error/set", data: rsp.error});
+      } else {
+        // update this user
+        store.dispatch({type: "user/set", data: rsp.data})
+        // clear group information from cache
+        store.dispatch({type: "group/clear", data: null});
+      }
+    });
+  }
+
+  return (
+    <p>
+      <Button variant="danger" onClick={(ev) => leave_group() }>
+        Leave Group
+      </Button>
+    </p>
+  );
+}
+
+function NewGroupOption({ user }) {
+  let history = useHistory();
+
+  function joinGroup(group_id, inv_id) {
+    let update_params = { id: user.id, group_id: group_id };
+    update_user(update_params).then((rsp) => {
+      if (rsp.error) {
+        // if receiving an error, display it.
+        store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         // delete the accepted invite
         //delete_invite(inv_id);
@@ -149,36 +143,41 @@ function NewGroupOption({user}) {
   }
 
   let invite_list = user.invites.map((inv) => {
-      return (
-          <li key={inv.id}>
-              {inv.group.name} -
-              <Button variant="primary" onClick={(ev) => joinGroup(inv.group.id, inv.id)}>
-                Join
-              </Button>
-          </li>
-      );
+    return (
+      <li key={inv.id}>
+        {inv.group.name} -
+        <Button
+          variant="primary"
+          onClick={(ev) => joinGroup(inv.group.id, inv.id)}
+        >
+          Join
+        </Button>
+      </li>
+    );
   });
   return (
     <div>
-        <Row>
-            <Col>
-                <h6>Make or join a group to see it here!</h6>
-                <p>
-                  <Button variant="primary" onClick={(ev) => history.push("/groups/new")}>
-                    New Group
-                  </Button>
-                </p>
-            </Col>
-        </Row>
-        <Row>
-            <Col>
-                <h6>Your invites</h6>
-                <ul>
-                    {invite_list}
-                </ul>
-            </Col>
-        </Row>
-    </div>)
+      <Row>
+        <Col>
+          <h6>Make or join a group to see it here!</h6>
+          <p>
+            <Button
+              variant="primary"
+              onClick={(ev) => history.push("/groups/new")}
+            >
+              New Group
+            </Button>
+          </p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <h6>Your invites</h6>
+          <ul>{invite_list}</ul>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
 function ShowGroup({group, user, session}) {
@@ -200,4 +199,8 @@ function ShowGroup({group, user, session}) {
     }
 }
 
-export default connect(({group, user, session}) => ({group, user, session}))(ShowGroup);
+export default connect(({ group, user, session }) => ({
+  group,
+  user,
+  session,
+}))(ShowGroup);
