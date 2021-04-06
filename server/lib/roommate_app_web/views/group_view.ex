@@ -15,8 +15,9 @@ defmodule RoommateAppWeb.GroupView do
       name: group.name,
       address: group.address,
       rotation_order: group.rotation_order,
-      users: render_many(group.users, RoommateAppWeb.UserView, "user.json"),
-      chores: render_many(group.chores, RoommateAppWeb.ChoreView, "chore.json")
+      users: render_many(group.users, RoommateAppWeb.UserView, "user_group.json"),
+      chores: render_many(group.chores, RoommateAppWeb.ChoreView, "chore.json"),
+      invites: render_many(group.invites, RoommateAppWeb.InviteView, "invite_group.json")
     }
   end
 
