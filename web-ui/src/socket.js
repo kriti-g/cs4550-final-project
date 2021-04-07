@@ -40,5 +40,5 @@ export function join_group_channel() {
     });
 
   // bind to listen to broadcasts.
-  channel.on("view", state_update);
+  channel.on("update", state_update);
 }

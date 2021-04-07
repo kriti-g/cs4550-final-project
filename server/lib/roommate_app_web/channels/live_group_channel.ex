@@ -27,7 +27,7 @@ defmodule RoommateAppWeb.LiveGroupChannel do
 
   @impl true
   def handle_in("update", payload, socket) do
-    broadcast socket, "view", payload
+    broadcast socket, "update", payload
     {:noreply, socket}
   end
 
