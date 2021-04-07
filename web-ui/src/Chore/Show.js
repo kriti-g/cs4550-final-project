@@ -50,7 +50,7 @@ function ShowChore({chore, session}){
         return (<ShowOneChore chore={chore} session={session}/>);
     } else if(chore && chore.id === id) {
         return (<h6>You don't have access to this chore</h6>);
-    } else if(session) {
+    } else if(session && chore === null) {
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
     } else {

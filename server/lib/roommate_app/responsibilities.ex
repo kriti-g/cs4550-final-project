@@ -57,12 +57,27 @@ defmodule RoommateApp.Responsibilities do
       {:error, %Ecto.Changeset{}}
 
   """
+  def list_group_responsibilities(group_id) do
+
+    Repo.all(from r in Responsibility, where: r.group_id == ^group_id)
+    # |> Repo.preload([responsibilities: :chore,  invites: :group])
+    # TODO : NEED TO PRELOAD SMT
+  end
+
+  def list_chore_responsibilities(chore_id) do
+    Repo.all(from r in Responsibility, where: r.chore_id == ^chore_id)
+  end
+
   def create_responsibility(attrs \\ %{}) do
+    IO.inspect([:CREATE_RESP_SQL, attrs])
     %Responsibility{}
     |> Responsibility.changeset(attrs)
     |> Repo.insert()
   end
 
+  def get_responsibility(chore_id, user_id) do
+    Repo.one(from r in Responsibility, where: r.chore_id == ^chore_id and r.user_id == ^user_id )
+  end
   @doc """
   Updates a responsibility.
 
