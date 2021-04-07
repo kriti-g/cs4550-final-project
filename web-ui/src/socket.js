@@ -27,7 +27,7 @@ export function set_chore(cid) {
 function state_update(resp) {
   fetch_user(user_id);
   fetch_group(group_id);
-  if (resp.chore_id == chore_id) {
+  if (resp.chore_id === chore_id) {
     chore_id = "deleted"
   }
   if (chore_id && chore_id !== "deleted") {
