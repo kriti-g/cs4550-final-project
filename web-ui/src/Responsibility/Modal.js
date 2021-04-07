@@ -11,7 +11,7 @@ import store from "../store";
 // TODO: CHECK ALL COMPLETIONS. should be synced with highest num of all responsibilities.
 function ResponsibilityModal(props) {
   let history = useHistory();
-  let { group_id, chore, users, refetch_group } = props;
+  let { group_id, chore, users } = props;
 
   const [respState, setRespState] = useState({
     completions: 0,
@@ -74,9 +74,11 @@ function ResponsibilityModal(props) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         setRespState({ chore_loaded: false });
-        // fetch_group(respState.group_id);
-        refetch_group(respState.group_id);
+        fetch_group(respState.group_id);
+        // refetch_group(respState.group_id);
         props.onHide();
+        window.location.reload(false);
+
         // history.push("/group");
       }
     });
