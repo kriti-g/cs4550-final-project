@@ -3,6 +3,11 @@ import { connect } from "react-redux";
 import { useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import socket, {
+  join_group_channel,
+  channel_signal,
+  check_channel,
+} from "../socket"
 import { Link } from "react-router-dom";
 import ResponsibilityModal from "../Responsibility/Modal";
 import store from "../store";
@@ -15,12 +20,14 @@ import {
   create_invite,
 } from "../api";
 
-
- 
 function ShowOneGroup({group, session, user}) {
   const [modalState, setModalState] = useState({
     modalShow: false,
   });
+
+  if (!check_channel()) {
+    join_group_channel(group.id)
+  }
 
   let member_list = group.users.map((usr) => {
     return <li key={usr.id}>{usr.name}</li>;
@@ -189,6 +196,8 @@ function LeaveGroupOption({user}) {
       } else {
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})
+        // notify the channel
+        channel_signal();
         // clear group information from cache
         store.dispatch({type: "group/clear", data: null});
       }
@@ -214,6 +223,9 @@ function NewGroupOption({ user }) {
         // if receiving an error, display it.
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
+        // join group channel and signal the group that there's a new member
+        join_group_channel(group_id);
+        channel_signal();
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})
       }

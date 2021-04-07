@@ -74,7 +74,6 @@ defmodule RoommateApp.Responsibilities do
   end
 
   def create_responsibility(attrs \\ %{}) do
-    IO.inspect([:CREATE_RESP_SQL, attrs])
     %Responsibility{}
     |> Responsibility.changeset(attrs)
     |> Repo.insert()

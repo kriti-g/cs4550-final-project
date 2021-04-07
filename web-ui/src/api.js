@@ -173,9 +173,15 @@ export async function create_responsibility(responsibility) {
 }
 
 // used for creating a responsibility obj with multiple user ids.
-// server will automatically create multiple or update existing . 
-export async function create_bulk_responsibilites(responsibility) { 
+// server will automatically create multiple or update existing .
+export async function create_bulk_responsibilites(responsibility) {
   return api_post("/responsibilities/bulkCreate", { responsibility });
+}
+
+// used for marking a responsibility obj complete.
+// server will update all other responsibilities for that chore.
+export async function update_bulk_responsibilites(responsibility) {
+  return api_post("/responsibilities/bulkUpdate", { responsibility });
 }
 
 export async function create_invite(invite) {
