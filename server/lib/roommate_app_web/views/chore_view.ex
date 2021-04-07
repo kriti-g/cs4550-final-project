@@ -16,6 +16,7 @@ defmodule RoommateAppWeb.ChoreView do
       desc: chore.desc,
       rotation: chore.rotation,
       frequency: chore.frequency,
+      group_id: chore.group_id,
       responsibilities: render_many(chore.responsibilities, RoommateAppWeb.ResponsibilityView, "responsibility_nochore.json")
     }
   end
@@ -25,7 +26,8 @@ defmodule RoommateAppWeb.ChoreView do
       name: chore.name,
       desc: chore.desc,
       rotation: chore.rotation,
-      frequency: chore.frequency
+      frequency: chore.frequency,
+      group_id: chore.group_id
     }
   end
 

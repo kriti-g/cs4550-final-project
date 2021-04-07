@@ -1,12 +1,13 @@
 import { Col, Row, Form, Button, Table } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useState } from "react";
-import { useRouteMatch } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import socket, {
+import {
   join_group_channel,
   channel_signal,
   check_channel,
+  clear_channel,
+  reset_cb_bindings
 } from "../socket"
 import { Link } from "react-router-dom";
 import ResponsibilityModal from "../Responsibility/Modal";
@@ -26,8 +27,9 @@ function ShowOneGroup({group, session, user}) {
   });
 
   if (!check_channel()) {
-    join_group_channel(group.id)
+    join_group_channel(session.user_id, group.id)
   }
+  reset_cb_bindings();
 
   let member_list = group.users.map((usr) => {
     return <li key={usr.id}>{usr.name}</li>;
@@ -155,8 +157,8 @@ function NewInvite({ group }) {
         // if receiving an error, display it.
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
-        // update this group
-        fetch_group(group.id);
+        // notify everyone
+        channel_signal();
       }
     });
   }
@@ -196,10 +198,11 @@ function LeaveGroupOption({user}) {
       } else {
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})
-        // notify the channel
-        channel_signal();
         // clear group information from cache
         store.dispatch({type: "group/clear", data: null});
+        // notify the channel
+        channel_signal();
+        clear_channel();
       }
     });
   }
@@ -224,7 +227,7 @@ function NewGroupOption({ user }) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         // join group channel and signal the group that there's a new member
-        join_group_channel(group_id);
+        join_group_channel(user.id, group_id);
         channel_signal();
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})

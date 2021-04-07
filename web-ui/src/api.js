@@ -60,7 +60,7 @@ async function api_delete(path, data) {
   };
 
   let text = await fetch("http://localhost:4000/api/v1" + path, opts);
-  return await text.json();
+  return text;
 }
 
 // TODO:  fetch functions may change over time depending on need.
@@ -83,12 +83,15 @@ export function fetch_user(id) {
 }
 
 export function fetch_group(id) {
-  api_get("/groups/" + id).then((data) =>
-    store.dispatch({
-      type: "group/set",
-      data: data,
-    })
-  );
+    api_get("/groups/" + id).then((data) => {
+      // to prevent it from breaking on post-group-leave broadcast
+      if (data) {
+        store.dispatch({
+          type: "group/set",
+          data: data,
+        })
+      }
+    });
 }
 
 export function fetch_chores() {
