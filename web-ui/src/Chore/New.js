@@ -2,7 +2,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { create_chore, fetch_user } from '../api';
+import { create_chore, fetch_group, fetch_user } from '../api';
 import store from "../store";
 
 
@@ -28,6 +28,7 @@ function ChoreNewForm({session, user}) {
             // if receiving an error, display it.
             store.dispatch({type: "error/set", data: rsp.error});
           } else {
+            fetch_group(chore.group_id);
             history.push("/group");
           }
         })
