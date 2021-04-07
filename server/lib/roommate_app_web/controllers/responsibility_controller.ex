@@ -71,12 +71,13 @@ defmodule RoommateAppWeb.ResponsibilityController do
       case Responsibilities.create_responsibility(new_params) do
         {:ok, %Responsibility{} = new_resp} ->
           Responsibilities.delete_responsibility(prev_resp)
-          # TODO: send text here 
+          # TODO: send text here
           render(conn, "show.json", responsibility: new_resp)
         {:error, _changeset} ->
           conn
           |> put_resp_header("content-type", "application/json; charset=UTF-8")
           |> send_resp(422, Jason.encode!(%{error: "Failed to update this responsibility."}))
+      end
     else
       new_deadline = DateTime.add(DateTime.now("America/New York"), prev_resp.chore.frequency, :hours)
       new_params = Map.put(resp_params, "deadline", new_deadline)

@@ -6,7 +6,7 @@ defmodule RoommateAppWeb.Helpers do
   end
 
   def get_next_in_rotation(order, prev_user_id) do
-    fun = fn(el) -> el == prev_user_id
+    fun = fn(el) -> el == prev_user_id end
     last_ind = Enum.find_index(order, fun)
     if last_ind + 1 == Enum.count(order) do
       hd order
