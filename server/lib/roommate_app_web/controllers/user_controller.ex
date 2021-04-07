@@ -5,6 +5,7 @@ defmodule RoommateAppWeb.UserController do
   alias RoommateApp.Users.User
   alias RoommateApp.Groups
   alias RoommateApp.Invites
+  alias RoommateApp.Responsibilities
   alias RoommateAppWeb.Plugs
 
   plug Plugs.RequireLoggedIn when action in [:show, :update, :delete]
@@ -73,6 +74,7 @@ defmodule RoommateAppWeb.UserController do
             order = Jason.decode!(group.rotation_order)
             new_order = Jason.encode!(order -- [user.id])
             Groups.update_group(group, %{"rotation_order" => new_order})
+            Responsibilities.delete_all_for_user(user.id)
           end
           render(conn, "show.json", user: user)
         {:error, _changeset} ->
