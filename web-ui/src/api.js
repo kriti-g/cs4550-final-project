@@ -2,17 +2,17 @@ import store from "./store";
 
 // get the current session token if there is one.
 function session_token() {
-    let state = store.getState();
-    return state?.session?.token;
+  let state = store.getState();
+  return state?.session?.token;
 }
 
 export async function api_get(path) {
   let stoken = session_token();
   let opts = {
-        method: "GET",
-        headers: {
-            "Session-Token": stoken,
-        },
+    method: "GET",
+    headers: {
+      "Session-Token": stoken,
+    },
   };
   let text = await fetch("http://localhost:4000/api/v1" + path, opts);
   let resp = await text.json();
@@ -172,6 +172,12 @@ export async function create_responsibility(responsibility) {
   return api_post("/responsibilities", { responsibility });
 }
 
+// used for creating a responsibility obj with multiple user ids.
+// server will automatically create multiple or update existing . 
+export async function create_bulk_responsibilites(responsibility) { 
+  return api_post("/responsibilities/bulkCreate", { responsibility });
+}
+
 export async function create_invite(invite) {
   return api_post("/invites", { invite });
 }
@@ -189,21 +195,25 @@ export async function update_user(user) {
 }
 
 export async function update_responsibility(responsibility) {
-  return api_patch("/responsibilities/" + responsibility.id, { responsibility });
+  return api_patch("/responsibilities/" + responsibility.id, {
+    responsibility,
+  });
 }
 
-export async function delete_invite(invite_id){
-  return api_delete("/invites/" + invite_id, { id: invite_id })
+export async function delete_invite(invite_id) {
+  return api_delete("/invites/" + invite_id, { id: invite_id });
 }
 
-export async function delete_group(group_id){
-  return api_delete("/groups/" + group_id, { id: group_id })
+export async function delete_group(group_id) {
+  return api_delete("/groups/" + group_id, { id: group_id });
 }
 
-export async function delete_chore(chore_id){
-  return api_delete("/chores/" + chore_id, { id: chore_id })
+export async function delete_chore(chore_id) {
+  return api_delete("/chores/" + chore_id, { id: chore_id });
 }
 
 export async function delete_responsibility(responsibility_id) {
-  return api_delete("/responsibilities/" + responsibility_id, { id: responsibility_id });
+  return api_delete("/responsibilities/" + responsibility_id, {
+    id: responsibility_id,
+  });
 }
