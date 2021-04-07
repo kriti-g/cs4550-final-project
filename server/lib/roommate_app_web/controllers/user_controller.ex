@@ -21,8 +21,9 @@ defmodule RoommateAppWeb.UserController do
       conn
     else
       conn
-      |> put_flash(:error, "Accessing a user which doesn't match the session")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "Accessing a user which doesn't match the session."}))
+      |> halt()
     end
   end
 
@@ -32,7 +33,6 @@ defmodule RoommateAppWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    IO.inspect(user_params)
     case Users.create_user(user_params) do
       {:ok, %User{} = us} ->
         user = Users.load_resp_chores(us)

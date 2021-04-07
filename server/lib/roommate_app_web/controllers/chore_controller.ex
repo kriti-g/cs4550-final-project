@@ -18,8 +18,9 @@ defmodule RoommateAppWeb.ChoreController do
       conn
     else
       conn
-      |> put_flash(:error, "You don't have access to this chore.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "You don't have access to this chore."}))
+      |> halt()
     end
   end
 

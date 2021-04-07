@@ -19,8 +19,9 @@ defmodule RoommateAppWeb.InviteController do
       conn
     else
       conn
-      |> put_flash(:error, "You don't have access to this invitation.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "You don't have access to this invitation."}))
+      |> halt()
     end
   end
 
