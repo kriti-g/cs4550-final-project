@@ -1,9 +1,8 @@
 import { Col, Row, Form, Button, Table } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useState } from "react";
-import { useRouteMatch } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import socket, {
+import {
   join_group_channel,
   channel_signal,
   check_channel,
@@ -28,7 +27,7 @@ function ShowOneGroup({group, session, user}) {
   });
 
   if (!check_channel()) {
-    join_group_channel(group.id)
+    join_group_channel(session.user_id, group.id)
   }
   reset_cb_bindings();
 
@@ -228,7 +227,7 @@ function NewGroupOption({ user }) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         // join group channel and signal the group that there's a new member
-        join_group_channel(group_id);
+        join_group_channel(user.id, group_id);
         channel_signal();
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})

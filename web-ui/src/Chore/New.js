@@ -2,8 +2,8 @@ import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { create_chore, fetch_group, fetch_user } from '../api';
-import socket, {
+import { create_chore,  fetch_user } from '../api';
+import {
   join_group_channel,
   channel_signal,
   check_channel,
@@ -23,7 +23,7 @@ function ChoreNewForm({session, user}) {
     let history = useHistory();
 
     if (!check_channel()) {
-      join_group_channel(user.group_id)
+      join_group_channel(session.user_id, user.group_id)
     }
     reset_cb_bindings();
 

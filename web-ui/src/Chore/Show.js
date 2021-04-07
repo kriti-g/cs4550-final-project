@@ -2,7 +2,7 @@ import { Col, Row, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import store from "../store";
-import { fetch_group, delete_chore } from "../api"
+import { delete_chore } from "../api"
 import { useHistory } from "react-router-dom";
 import {
   join_group_channel,
@@ -46,7 +46,7 @@ function ShowOneChore({chore, session}) {
   }
 
   if (!check_channel()) {
-    join_group_channel(chore.group_id)
+    join_group_channel(session.user_id, chore.group_id)
   }
   if (!(check_chore() === chore.id)) {
     set_chore(chore.id)

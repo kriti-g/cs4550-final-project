@@ -1,10 +1,11 @@
 import { Socket } from 'phoenix-socket';
-import { fetch_group, fetch_chore } from './api'
+import { fetch_group, fetch_chore, fetch_user } from './api'
 
 let socket = new Socket("ws://localhost:4000/socket", { params: {}});
 socket.connect();
 
 let channel = null;
+let user_id = null;
 let group_id = null;
 let chore_id = null;
 
@@ -24,6 +25,7 @@ export function set_chore(cid) {
 }
 
 function state_update(resp) {
+  fetch_user(user_id);
   fetch_group(group_id);
   if (resp.chore_id == chore_id) {
     chore_id = "deleted"
@@ -48,7 +50,8 @@ export function listen_for_deletions(cb) {
 }
 
 // set the channel with gamename and join.
-export function join_group_channel(gid) {
+export function join_group_channel(uid, gid) {
+  user_id = uid;
   group_id = gid;
   channel = socket.channel("live_group:" + group_id, {});
   join_group();

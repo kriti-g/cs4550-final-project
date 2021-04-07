@@ -1,17 +1,15 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 
 import Flatpickr from "react-flatpickr";
 import "../index.css";
 import "flatpickr/dist/themes/material_green.css";
-import { create_bulk_responsibilites, fetch_chores, fetch_group } from "../api";
+import { create_bulk_responsibilites } from "../api";
 import store from "../store";
 import { channel_signal } from "../socket"
 
 // TODO: CHECK ALL COMPLETIONS. should be synced with highest num of all responsibilities.
 function ResponsibilityModal(props) {
-  let history = useHistory();
   let { group_id, chore, users } = props;
 
   const [respState, setRespState] = useState({
