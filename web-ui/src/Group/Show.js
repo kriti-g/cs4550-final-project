@@ -21,10 +21,6 @@ function ShowOneGroup({group, session, user}) {
   const [modalState, setModalState] = useState({
     modalShow: false,
   });
-  let member_list = group.users.map((usr) => {
-    return <li>{usr.name}</li>;
-
-  });
 
   let member_list = group.users.map((usr) => {
     return <li key={usr.id}>{usr.name}</li>;
