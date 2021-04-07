@@ -34,6 +34,10 @@ defmodule RoommateApp.Users.User do
    cset
   end
 
+  def add_group_id(cset, -1) do
+    change(cset, group_id: nil)
+  end
+
   def add_group_id(cset, group_id) do
    change(cset, group_id: group_id)
   end
