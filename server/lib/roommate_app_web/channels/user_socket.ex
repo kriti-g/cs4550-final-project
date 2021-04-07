@@ -3,6 +3,7 @@ defmodule RoommateAppWeb.UserSocket do
 
   ## Channels
   # channel "room:*", RoommateAppWeb.RoomChannel
+  channel "live_group:*", RoommateAppWeb.LiveGroupChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

@@ -5,6 +5,7 @@ defmodule RoommateAppWeb.UserController do
   alias RoommateApp.Users.User
   alias RoommateApp.Groups
   alias RoommateApp.Invites
+  alias RoommateApp.Responsibilities
   alias RoommateAppWeb.Plugs
 
   plug Plugs.RequireLoggedIn when action in [:show, :update, :delete]
@@ -20,8 +21,9 @@ defmodule RoommateAppWeb.UserController do
       conn
     else
       conn
-      |> put_flash(:error, "Accessing a user which doesn't match the session")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "Accessing a user which doesn't match the session."}))
+      |> halt()
     end
   end
 
@@ -31,7 +33,6 @@ defmodule RoommateAppWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    IO.inspect(user_params)
     case Users.create_user(user_params) do
       {:ok, %User{} = us} ->
         user = Users.load_resp_chores(us)
@@ -56,7 +57,6 @@ defmodule RoommateAppWeb.UserController do
     add_to_group_order = user_params["group_id"] != nil && prev_user.group_id == nil
     rem_from_group_order = user_params["group_id"] == -1 && prev_user.group_id != nil
     invalid_transaction = user_params["group_id"] > 0 && prev_user.group_id != nil
-    IO.inspect([:booleans, add_to_group_order, rem_from_group_order, invalid_transaction])
     if !invalid_transaction do
       case Users.update_user(prev_user, user_params) do
         {:ok, %User{} = user} ->
@@ -64,7 +64,6 @@ defmodule RoommateAppWeb.UserController do
             group = Groups.get_group!(user.group_id)
             order = Jason.decode!(group.rotation_order)
             new_order = Jason.encode!([ user.id | order ])
-            IO.inspect([:add_params, order, new_order])
             Groups.update_group(group, %{"rotation_order" => new_order})
             Invites.delete_all_for_user(user.id)
           end
@@ -73,6 +72,7 @@ defmodule RoommateAppWeb.UserController do
             order = Jason.decode!(group.rotation_order)
             new_order = Jason.encode!(order -- [user.id])
             Groups.update_group(group, %{"rotation_order" => new_order})
+            Responsibilities.delete_all_for_user(user.id)
           end
           render(conn, "show.json", user: user)
         {:error, _changeset} ->

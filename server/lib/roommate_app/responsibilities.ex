@@ -26,6 +26,11 @@ defmodule RoommateApp.Responsibilities do
     Repo.preload(resp, [:user, :chore])
   end
 
+  def delete_all_for_user(uid) do
+    from(resp in Responsibility, where: resp.user_id == ^uid)
+    |> Repo.delete_all
+  end
+
   @doc """
   Gets a single responsibility.
 

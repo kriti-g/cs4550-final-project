@@ -136,7 +136,7 @@ function ShowOneGroup({group, session, user}) {
   );
 }
 
-  
+
 function NewInvite({ group }) {
   let [inv, setInvite] = useState({});
 
@@ -214,8 +214,6 @@ function NewGroupOption({ user }) {
         // if receiving an error, display it.
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
-        // delete the accepted invite
-        //delete_invite(inv_id);
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})
       }

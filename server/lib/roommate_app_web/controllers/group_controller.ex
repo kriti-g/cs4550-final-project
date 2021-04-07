@@ -18,8 +18,9 @@ defmodule RoommateAppWeb.GroupController do
       conn
     else
       conn
-      |> put_flash(:error, "Leave your current group to make a new group.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "Leave your current group to make a new group."}))
+      |> halt()
     end
   end
 
@@ -31,8 +32,9 @@ defmodule RoommateAppWeb.GroupController do
       conn
     else
       conn
-      |> put_flash(:error, "You need to be a part of this group.")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> put_resp_header("content-type", "application/json; charset=UTF-8")
+      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "You need to be a part of this group."}))
+      |> halt()
     end
   end
 
