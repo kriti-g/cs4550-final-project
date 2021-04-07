@@ -23,7 +23,8 @@ defmodule RoommateAppWeb.Router do
     pipe_through :api
 
     get "/responsibilities/group/:group_id", ResponsibilityController, :get_group_responsibilities
-    post "/responsibilities/bulkCreate", ResponsibilityController, :create_multiple_responsibilites
+    post "/responsibilities/bulkCreate", ResponsibilityController, :create_multiple_responsibilities
+    post "/responsibilities/bulkUpdate", ResponsibilityController, :update_multiple_responsibilities
 
     resources "/groups", GroupController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]

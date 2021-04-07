@@ -3,6 +3,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
 
   alias RoommateApp.Responsibilities
   alias RoommateApp.Groups
+  alias RoommateApp.Chores
   alias RoommateApp.Responsibilities.Responsibility
   alias RoommateAppWeb.Plugs
   alias RoommateApp.Sms
@@ -39,7 +40,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     render(conn, "index.json", responsibilities: responsibilities)
   end
 
-  def create_multiple_responsibilites(conn, %{"responsibility" => responsibility_params}) do
+  def create_multiple_responsibilities(conn, %{"responsibility" => responsibility_params}) do
     IO.inspect([:CREATE_RESP_BULK, responsibility_params])
     users = responsibility_params["user_ids"]
     IO.inspect([:userids, users])
@@ -138,37 +139,74 @@ defmodule RoommateAppWeb.ResponsibilityController do
     render(conn, "show.json", responsibility: responsibility)
   end
 
-  def update(conn, %{"id" => id, "responsibility" => resp_params}) do
-    prev_resp = Responsibilities.get_responsibility!(id)
-    finished_rotation = resp_params["completions"] > prev_resp.chore.rotation && prev_resp.chore.rotation != 0
-
+  def update_multiple_responsibilities(conn, %{"responsibility" => resp_params}) do
+    chore = Chores.get_chore!(resp_params["chore_id"])
+    old_resps = Responsibilities.list_chore_responsibilities(resp_params["chore_id"])
+    {:ok, time_now} = DateTime.now("America/New_York")
+    new_deadline = DateTime.to_naive(DateTime.add(time_now, chore.frequency * 3600, :second))
+    finished_rotation = resp_params["completions"] >= chore.rotation && chore.rotation != 0
+    IO.inspect([:update_first, new_deadline, finished_rotation])
     if finished_rotation do
-      group = Groups.get_group!(prev_resp.group_id)
-      order = Jason.decode(group.rotation_order)
-      next_user_id = get_next_in_rotation(order, prev_resp.user_id) #TODO: write helper
-      new_deadline = DateTime.add(DateTime.now("America/New York"), prev_resp.chore.frequency, :hours)
-      new_params = %{ "group_id" => group.id, "user_id" => next_user_id, "completions" => 0, "deadline" => new_deadline}
-      case Responsibilities.create_responsibility(new_params) do
-        {:ok, %Responsibility{} = new_resp} ->
-          Responsibilities.delete_responsibility(prev_resp)
-          # TODO: send text here
-          render(conn, "show.json", responsibility: new_resp)
-        {:error, _changeset} ->
-          conn
-          |> put_resp_header("content-type", "application/json; charset=UTF-8")
-          |> send_resp(422, Jason.encode!(%{error: "Failed to update this responsibility."}))
+      # switch resps over
+      group = Groups.get_group!(chore.group_id)
+      {:ok, order} = Jason.decode(group.rotation_order)
+      switch_over = fn(old) ->
+        next_user_id = get_next_in_rotation(order, old.user_id)
+        new_params = %{ "group_id" => group.id, "user_id" => next_user_id, "chore_id" => chore.id, "completions" => 0, "deadline" => new_deadline}
+        case Responsibilities.create_responsibility(new_params) do
+          {:ok, %Responsibility{} = new_resp} ->
+            Responsibilities.delete_responsibility(old)
+            # TODO: send text here
+            true
+          {:error, _changeset} ->
+            false
+        end
+      end
+      full_success = Enum.all?(old_resps, switch_over)
+      if full_success do
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(200, Jason.encode!(%{success: "Responsibilities updated."}))
+      else
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Some responsibilities may not have updated properly."}))
       end
     else
-      new_deadline = DateTime.add(DateTime.now("America/New York"), prev_resp.chore.frequency, :hours)
-      new_params = Map.put(resp_params, "deadline", new_deadline)
-      case Responsibilities.update_responsibility(prev_resp, new_params) do
-        {:ok, %Responsibility{} = new_resp} ->
-          render(conn, "show.json", responsibility: new_resp)
-        {:error, _changeset} ->
-          conn
-          |> put_resp_header("content-type", "application/json; charset=UTF-8")
-          |> send_resp(422, Jason.encode!(%{error: "Failed to update this responsibility."}))
+      # update normally
+      update_all = fn(old) ->
+        new_params = %{ "completions" => resp_params["completions"], "deadline" => new_deadline }
+        case Responsibilities.update_responsibility(old, new_params) do
+          {:ok, %Responsibility{} = new_resp} ->
+            # TODO: send text here
+            true
+          {:error, _changeset} ->
+            false
+        end
       end
+      full_success = Enum.all?(old_resps, update_all)
+      if full_success do
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(200, Jason.encode!(%{success: "Responsibilities updated."}))
+      else
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Some responsibilities may not have updated properly."}))
+      end
+    end
+  end
+
+  def update(conn, %{"id" => id, "responsibility" => resp_params}) do
+    prev_resp = Responsibilities.get_responsibility!(id)
+
+    case Responsibilities.update_responsibility(prev_resp, resp_params) do
+      {:ok, %Responsibility{} = new_resp} ->
+        render(conn, "show.json", responsibility: new_resp)
+      {:error, _changeset} ->
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(422, Jason.encode!(%{error: "Failed to update this responsibility."}))
     end
   end
 

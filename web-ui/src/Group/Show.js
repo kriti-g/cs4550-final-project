@@ -20,8 +20,6 @@ import {
   create_invite,
 } from "../api";
 
-
-
 function ShowOneGroup({group, session, user}) {
   const [modalState, setModalState] = useState({
     modalShow: false,
