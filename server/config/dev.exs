@@ -28,6 +28,9 @@ config :cors_plug,
   methods: ["GET", "POST", "PATCH", "DELETE"],
   headers: ["Content-Type", "Session-Token"]
 
+config :joken,
+  default_signer: "secret"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

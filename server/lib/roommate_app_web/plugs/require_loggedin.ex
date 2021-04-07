@@ -5,8 +5,9 @@ defmodule RoommateAppWeb.Plugs.RequireLoggedIn do
 
   def call(conn, _args) do
     token = Enum.at(get_req_header(conn, "session-token"), 0)
-    case Phoenix.Token.verify(conn, "user_id", token, max_age: 86400) do
-      {:ok, user_id} ->
+    case RoommateApp.Token.verify_and_validate(token) do
+      {:ok, jwt_claims} ->
+        user_id = jwt_claims["user_id"]
         user = RoommateApp.Users.get_user!(user_id) # find the assoc user
         assign(conn, :user, user) # assign the user to conn for easy access
       {:error, _err} ->

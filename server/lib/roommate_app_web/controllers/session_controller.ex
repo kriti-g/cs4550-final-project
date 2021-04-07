@@ -7,7 +7,7 @@ defmodule RoommateAppWeb.SessionController do
       sess = %{
         user_id: user.id,
         name: user.name,
-        token: Phoenix.Token.sign(conn, "user_id", user.id)
+        token: RoommateApp.Token.generate_and_sign!(%{"user_id" => user.id})
       }
       conn
       |> put_resp_header(
