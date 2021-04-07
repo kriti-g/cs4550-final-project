@@ -101,5 +101,4 @@ function ShowChore({chore, session}){
     }
 }
 
-
-export default connect(({chore, session})=>({chore, session}))(ShowChore); // TODO
+export default connect(({ chore, session }) => ({ chore, session }))(ShowChore); // TODO
