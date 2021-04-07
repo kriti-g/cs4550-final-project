@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { fetch_chores } from '../api';
 
+  // UNUSED
 function ChoreListTable({chores, session}) {
     if(!session) {
         return (

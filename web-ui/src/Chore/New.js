@@ -3,8 +3,13 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { create_chore, fetch_group, fetch_user } from '../api';
+import socket, {
+  join_group_channel,
+  channel_signal,
+  check_channel,
+  reset_cb_bindings
+} from "../socket"
 import store from "../store";
-
 
 // create the base, unassigned chore first.
 function ChoreNewForm({session, user}) {
@@ -17,6 +22,10 @@ function ChoreNewForm({session, user}) {
     });
     let history = useHistory();
 
+    if (!check_channel()) {
+      join_group_channel(user.group_id)
+    }
+    reset_cb_bindings();
 
     function onSubmit(event){
         event.preventDefault();
@@ -28,7 +37,7 @@ function ChoreNewForm({session, user}) {
             // if receiving an error, display it.
             store.dispatch({type: "error/set", data: rsp.error});
           } else {
-            fetch_group(chore.group_id);
+            channel_signal();
             history.push("/group");
           }
         })

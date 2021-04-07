@@ -2,17 +2,31 @@ import { Col, Row, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import store from "../store";
+import { fetch_group, delete_chore } from "../api"
+import { useHistory } from "react-router-dom";
+import {
+  join_group_channel,
+  channel_signal,
+  check_channel,
+  check_chore,
+  set_chore,
+  channel_signal_deletion,
+  listen_for_deletions,
+} from "../socket"
 
 import { fetch_chore, update_bulk_responsibilites } from '../api';
 
 function ShowOneChore({chore, session}) {
+  let history = useHistory();
   let rem_completions = completions_left();
   let next_deadline = deadline();
   function completions_left() {
-    if (chore.responsibilities.length === 0) {
-      return chore.rotation
+    if (chore.rotation === 0) {
+      return "Chore does not rotate."
+    } else if (chore.responsibilities.length === 0) {
+      return "Completions left before new rotation:" + chore.rotation
     } else {
-      return chore.rotation - chore.responsibilities[0].completions
+      return "Completions left before new rotation:" + (chore.rotation - chore.responsibilities[0].completions)
     }
   }
   function deadline() {
@@ -23,12 +37,28 @@ function ShowOneChore({chore, session}) {
     }
   }
 
+  function delete_cb(resp) {
+    if (resp.chore_id === chore.id) {
+      set_chore("deleted")
+      history.push("/group")
+      store.dispatch({ type: "chore/clear", data: {} });
+    }
+  }
+
+  if (!check_channel()) {
+    join_group_channel(chore.group_id)
+  }
+  if (!(check_chore() === chore.id)) {
+    set_chore(chore.id)
+  }
+  listen_for_deletions(delete_cb);
+
     return (
         <Row>
             <Col>
                 <h4> {chore.name} </h4>
                 <p>Complete by {next_deadline}</p>
-                <p>Completions left before new rotation: {rem_completions}</p>
+                <p>{rem_completions}</p>
                 <p>Chore is repeated every {chore.frequency} hour(s).</p>
                 <p>{chore.desc}</p>
                 <h6>Members responsible:</h6>
@@ -52,7 +82,17 @@ function ShowOneChore({chore, session}) {
 function ChoreControls({chore, session}) {
   let is_responsible = chore.responsibilities.some((rsp) => {
       return rsp.user.id === session.user_id; });
-  function delete_chore() {
+
+  function on_delete() {
+    delete_chore(chore.id).then((rsp) => {
+      if (rsp.error) {
+        // if receiving an error, display it.
+        store.dispatch({ type: "error/set", data: rsp.error });
+      } else {
+        // update this chore
+        channel_signal_deletion(chore.id)
+      }
+    });
   }
 
   function mark_complete() {
@@ -66,14 +106,14 @@ function ChoreControls({chore, session}) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         // update this chore
-        fetch_chore(chore.id)
+        channel_signal()
       }
     });
   }
   let delete_button = (
     <Button
     variant="danger"
-    onClick={(ev) => delete_chore()}>
+    onClick={(ev) => on_delete()}>
     Delete
     </Button>
   )
@@ -85,15 +125,15 @@ function ChoreControls({chore, session}) {
     </Button>
   ) : (<></>)
 
-  return (<>{edit_button}</>)
+  return (<>{delete_button}{edit_button}</>)
 }
 
 function ShowChore({chore, session}){
     let match = useRouteMatch();
     let id = match.params.id;
-    if(chore && chore.id == id) {
+    if(chore && chore.id == id && check_chore() !== "deleted") {
         return (<ShowOneChore chore={chore} session={session}/>);
-    } else if(session && chore === null) {
+    } else if (session && (chore === null || chore.id != id)) {
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
     } else {

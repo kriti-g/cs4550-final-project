@@ -7,6 +7,8 @@ import socket, {
   join_group_channel,
   channel_signal,
   check_channel,
+  clear_channel,
+  reset_cb_bindings
 } from "../socket"
 import { Link } from "react-router-dom";
 import ResponsibilityModal from "../Responsibility/Modal";
@@ -28,6 +30,7 @@ function ShowOneGroup({group, session, user}) {
   if (!check_channel()) {
     join_group_channel(group.id)
   }
+  reset_cb_bindings();
 
   let member_list = group.users.map((usr) => {
     return <li key={usr.id}>{usr.name}</li>;
@@ -155,8 +158,8 @@ function NewInvite({ group }) {
         // if receiving an error, display it.
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
-        // update this group
-        fetch_group(group.id);
+        // notify everyone
+        channel_signal();
       }
     });
   }
@@ -196,10 +199,11 @@ function LeaveGroupOption({user}) {
       } else {
         // update this user
         store.dispatch({type: "user/set", data: rsp.data})
-        // notify the channel
-        channel_signal();
         // clear group information from cache
         store.dispatch({type: "group/clear", data: null});
+        // notify the channel
+        channel_signal();
+        clear_channel();
       }
     });
   }

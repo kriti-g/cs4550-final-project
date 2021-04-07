@@ -23,6 +23,8 @@ function chore(state = null, action) {
   switch (action.type) {
     case "chore/set":
       return action.data;
+    case "chore/clear":
+      return null;
     case "group/clear":
       return null;
     default:

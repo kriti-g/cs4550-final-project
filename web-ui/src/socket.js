@@ -1,21 +1,36 @@
 import { Socket } from 'phoenix-socket';
-import { fetch_group } from './api'
+import { fetch_group, fetch_chore } from './api'
 
-let socket = new Socket("ws://localhost:4000/socket", {
-  // no authentication yet just ignore this
-  params: {
-    token: '123',
-  },
-});
+let socket = new Socket("ws://localhost:4000/socket", { params: {}});
 socket.connect();
 
 let channel = null;
 let group_id = null;
+let chore_id = null;
 
+export function check_channel() {
+  return channel;
+}
+export function clear_channel() {
+  channel = null;
+}
 
+export function check_chore() {
+  return chore_id;
+}
+
+export function set_chore(cid) {
+  chore_id = cid
+}
 
 function state_update(resp) {
   fetch_group(group_id);
+  if (resp.chore_id == chore_id) {
+    chore_id = "deleted"
+  }
+  if (chore_id && chore_id !== "deleted") {
+    fetch_chore(chore_id)
+  }
 }
 
 export function gen_socket(uid, token) {
@@ -28,12 +43,8 @@ export function gen_socket(uid, token) {
   socket.connect();
 }
 
-export function check_channel() {
-  return channel;
-}
-
-export function clear_channel() {
-  channel = null;
+export function listen_for_deletions(cb) {
+  channel.on("delete", cb);
 }
 
 // set the channel with gamename and join.
@@ -47,6 +58,17 @@ export function channel_signal() {
   channel.push("update", {})
 }
 
+export function reset_cb_bindings() {
+  channel.off("delete");
+  channel.off("update");
+  channel.on("delete", state_update);
+  channel.on("update", state_update);
+}
+
+export function channel_signal_deletion(cid) {
+  console.log("choreid", cid)
+  channel.push("delete", { chore_id: cid })
+}
 // join game. called after gamename is set.
 export function join_group() {
   channel
@@ -59,5 +81,6 @@ export function join_group() {
     });
 
   // bind to listen to broadcasts.
+  channel.on("delete", state_update);
   channel.on("update", state_update);
 }

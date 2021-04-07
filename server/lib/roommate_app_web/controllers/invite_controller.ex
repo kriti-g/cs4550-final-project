@@ -32,14 +32,23 @@ defmodule RoommateAppWeb.InviteController do
 
   def create(conn, %{"invite" => invite_paras}) do
     user = conn.assigns[:user]
-    email = invite_paras["user_email"]
+    email = if invite_paras["user_email"] do
+      invite_paras["user_email"]
+    else
+      ""
+    end
     invitee = Users.get_user_by_email(email)
     invite_params = if invitee do
       Map.put(invite_paras, "user_id", invitee.id)
     else
       invite_paras
     end
-    if is_group_member(user, invite_params) && invitee do
+    error = if invitee do
+      "Database failed to create new invite."
+    else
+      "The email is not linked to a user account."
+    end
+    if is_group_member(user, invite_params) do
       case Invites.create_invite(invite_params) do
         {:ok, %Invite{} = inv} ->
           invite = Invites.load_group_user(inv)
@@ -50,12 +59,12 @@ defmodule RoommateAppWeb.InviteController do
         {:error, _changeset} ->
           conn
           |> put_resp_header("content-type", "application/json; charset=UTF-8")
-          |> send_resp(422, Jason.encode!(%{error: "Failed to create new invite."}))
+          |> send_resp(422, Jason.encode!(%{error: error}))
       end
     else
       conn
       |> put_resp_header("content-type", "application/json; charset=UTF-8")
-      |> send_resp(422, Jason.encode!(%{error: "Failed to create new invite."}))
+      |> send_resp(422, Jason.encode!(%{error: "No access to this group."}))
     end
   end
 

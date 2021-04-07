@@ -147,7 +147,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     finished_rotation = resp_params["completions"] >= chore.rotation && chore.rotation != 0
     IO.inspect([:update_first, new_deadline, finished_rotation])
     if finished_rotation do
-      # switch resps over
+      # switch resps over to next people in the rotation
       group = Groups.get_group!(chore.group_id)
       {:ok, order} = Jason.decode(group.rotation_order)
       switch_over = fn(old) ->

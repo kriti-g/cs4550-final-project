@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { fetch_user } from '../api.js';
 
+// UNUSED
 function GroupListTable({user, session}) {
     if(!session) {
         return (

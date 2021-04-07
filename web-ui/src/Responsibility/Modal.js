@@ -7,6 +7,7 @@ import "../index.css";
 import "flatpickr/dist/themes/material_green.css";
 import { create_bulk_responsibilites, fetch_chores, fetch_group } from "../api";
 import store from "../store";
+import { channel_signal } from "../socket"
 
 // TODO: CHECK ALL COMPLETIONS. should be synced with highest num of all responsibilities.
 function ResponsibilityModal(props) {
@@ -74,7 +75,8 @@ function ResponsibilityModal(props) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         setRespState({ chore_loaded: false });
-        fetch_group(respState.group_id);
+        channel_signal();
+        //fetch_group(respState.group_id);
         // refetch_group(respState.group_id);
         props.onHide();
         window.location.reload(false);

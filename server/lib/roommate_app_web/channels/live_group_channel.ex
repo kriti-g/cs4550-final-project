@@ -31,6 +31,11 @@ defmodule RoommateAppWeb.LiveGroupChannel do
     {:noreply, socket}
   end
 
+  def handle_in("delete", payload, socket) do
+    broadcast socket, "delete", payload
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
