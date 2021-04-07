@@ -34,21 +34,18 @@ function ShowOneGroup({ group, session }) {
   let chores_rows = group.chores.map((chr) => {
     let assignee = "";
     let resp_l = chr.responsibilities.length;
-    chr.responsibilities.forEach((r, idx)=> {
-      if (resp_l-1 === idx) { 
-        assignee += r.user.name
+    chr.responsibilities.forEach((r, idx) => {
+      if (resp_l - 1 === idx) {
+        assignee += r.user.name;
+      } else {
+        assignee += r.user.name + ", ";
       }
-      else { 
-        assignee += r.user.name + ", "
-      }
-    })
-    if (resp_l === 0 ) {
+    });
+    if (resp_l === 0) {
       assignee = "N/A";
     }
     let deadline = resp_l === 0 ? "N/A" : chr.responsibilities[0].deadline;
 
-
-    
     return (
       <tr key={chr.id}>
         <td>
@@ -57,11 +54,16 @@ function ShowOneGroup({ group, session }) {
         <td>{assignee}</td>
         <td>{deadline}</td>
         <td>
-          <Button variant="primary" onClick={() => setModalState({
-            chore: chr,
-            modalShow: true,
-            group_id: group.id
-          })}>
+          <Button
+            variant="primary"
+            onClick={() =>
+              setModalState({
+                chore: chr,
+                modalShow: true,
+                group_id: group.id,
+              })
+            }
+          >
             Assign
           </Button>
         </td>
@@ -86,6 +88,12 @@ function ShowOneGroup({ group, session }) {
   if (group.chores.length === 0) {
     chores_table = <div>No chores created.</div>;
   }
+
+  const refetch_group = (group_id) => {
+    console.log("refetch group", group_id);
+    fetch_group(group_id);
+  };
+
   return (
     <div>
       <Row>
@@ -118,7 +126,8 @@ function ShowOneGroup({ group, session }) {
         chore={modalState.chore}
         users={group.users}
         group_id={group.id}
-        onHide={() => setModalState({...modalState, modalShow: false})}
+        // refetch_group={refetch_group} // browser complains... invalid value for prop .. might be react bootstrap outdated.
+        onHide={() => setModalState({ ...modalState, modalShow: false })}
       />
     </div>
   );

@@ -11,7 +11,7 @@ import store from "../store";
 // TODO: CHECK ALL COMPLETIONS. should be synced with highest num of all responsibilities.
 function ResponsibilityModal(props) {
   let history = useHistory();
-  let { group_id, chore, users } = props;
+  let { group_id, chore, users, refetch_group } = props;
 
   const [respState, setRespState] = useState({
     completions: 0,
@@ -23,7 +23,6 @@ function ResponsibilityModal(props) {
   });
 
   useEffect(() => {
-      console.log("!!", chore != undefined, respState.chore_loaded)
     if (
       chore != undefined &&
       (chore.id !== respState.chore_id || respState.chore_loaded === false)
@@ -75,7 +74,8 @@ function ResponsibilityModal(props) {
         store.dispatch({ type: "error/set", data: rsp.error });
       } else {
         setRespState({ chore_loaded: false });
-        fetch_group(respState.group_id);
+        // fetch_group(respState.group_id);
+        refetch_group(respState.group_id);
         props.onHide();
         // history.push("/group");
       }
@@ -108,7 +108,6 @@ function ResponsibilityModal(props) {
   function userIsResponsible(user_id) {
     chore.responsibilities.forEach((resp) => {
       if (resp.user.id === user_id) {
-        console.log("!", user_id);
         return true;
       }
     });
@@ -122,21 +121,37 @@ function ResponsibilityModal(props) {
   }
 
   let userSelection = users.map((u) => {
-    return (
-      <li key={u.id}>
-        <Form.Check
-          onClick={() => selectUsers(u.id)}
-          id={"check_" + u.id}
-          type="checkbox"
-          label={u.name}
-          value
-        />
-      </li>
-    );
+    if (chore && userIsResponsible(u.id)) {
+      return (
+        <li key={u.id}>
+          <Form.Check
+            onClick={() => selectUsers(u.id)}
+            id={"check_" + u.id}
+            type="checkbox"
+            label={u.name}
+            value
+            checked
+          />
+        </li>
+      );
+    } else {
+      return (
+        <li key={u.id}>
+          <Form.Check
+            onClick={() => selectUsers(u.id)}
+            id={"check_" + u.id}
+            type="checkbox"
+            label={u.name}
+            value
+          />
+        </li>
+      );
+    }
   });
 
   return (
     <Modal
+      animation={false}
       {...props}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
