@@ -46,10 +46,8 @@ function ShowOneChore({chore, session}) {
 function ShowChore({chore, session}){
     let match = useRouteMatch();
     let id = match.params.id;
-    if(chore && chore.id === id && chore.group.users.includes(session.user_id)) { // TODO
+    if(chore && chore.id == id) {
         return (<ShowOneChore chore={chore} session={session}/>);
-    } else if(chore && chore.id === id) {
-        return (<h6>You don't have access to this chore</h6>);
     } else if(session && chore === null) {
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
