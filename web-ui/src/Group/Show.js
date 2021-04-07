@@ -1,10 +1,10 @@
-import { Col, Row, Form, Button } from "react-bootstrap";
+import { Col, Row, Form, Button, Table } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import ResponsibilityModal from "../Responsibility/Modal";
 import store from "../store";
 
 import {
@@ -15,16 +15,87 @@ import {
   create_invite,
 } from "../api";
 
+
+ 
 function ShowOneGroup({group, session, user}) {
+  const [modalState, setModalState] = useState({
+    modalShow: false,
+  });
+
   let member_list = group.users.map((usr) => {
-    return <li>{usr.name}</li>;
+    return <li key={usr.id}>{usr.name}</li>;
   });
-  let chore_list = group.chores.map((chr) => {
-    return <li>{chr.name}</li>;
-  });
+  // let chore_list = group.chores.map((chr) => {
+  //   return <li>{chr.name}</li>;
+  // });
   let invite_list = group.invites.map((inv) => {
     return <li key={inv.id}>{inv.user.name}</li>;
   });
+
+  // TODO: chores details page is broken. infinite api call?
+  let chores_rows = group.chores.map((chr) => {
+    let assignee = "";
+    let resp_l = chr.responsibilities.length;
+    chr.responsibilities.forEach((r, idx) => {
+      if (resp_l - 1 === idx) {
+        assignee += r.user.name;
+      } else {
+        assignee += r.user.name + ", ";
+      }
+    });
+    if (resp_l === 0) {
+      assignee = "N/A";
+    }
+    let deadline = resp_l === 0 ? "N/A" : chr.responsibilities[0].deadline;
+
+    return (
+      <tr key={chr.id}>
+        <td>
+          <Link to={"/chores/" + chr.id}> {chr.name}</Link>
+        </td>
+        <td>{assignee}</td>
+        <td>{deadline}</td>
+        <td>
+          <Button
+            variant="primary"
+            onClick={() =>
+              setModalState({
+                chore: chr,
+                modalShow: true,
+                group_id: group.id,
+              })
+            }
+          >
+            Assign
+          </Button>
+        </td>
+      </tr>
+    );
+  });
+
+  let chores_table = (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>Chore</th>
+          <th>Currently Assigned</th>
+          <th>Deadline</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>{chores_rows}</tbody>
+    </Table>
+  );
+
+  if (group.chores.length === 0) {
+    chores_table = <div>No chores created.</div>;
+  }
+
+  const refetch_group = (group_id) => {
+    console.log("refetch group", group_id);
+    fetch_group(group_id);
+  };
+
   return (
     <div>
       <Row>
@@ -38,10 +109,10 @@ function ShowOneGroup({group, session, user}) {
           <h5>
             Chores
             <span>
-              <Link to={"/chores/new/"}>   [Add +]</Link>
+              <Link to={"/chores/new/"}> [Add +]</Link>
             </span>
           </h5>
-          <ul>{chore_list}</ul>
+          {chores_table}
         </Col>
         <Col sm={4}>
           <LeaveGroupOption user={user}/>
@@ -52,6 +123,15 @@ function ShowOneGroup({group, session, user}) {
           <ul>{invite_list}</ul>
         </Col>
       </Row>
+
+      <ResponsibilityModal
+        show={modalState.modalShow}
+        chore={modalState.chore}
+        users={group.users}
+        group_id={group.id}
+        // refetch_group={refetch_group} // browser complains... invalid value for prop .. might be react bootstrap outdated.
+        onHide={() => setModalState({ ...modalState, modalShow: false })}
+      />
     </div>
   );
 }

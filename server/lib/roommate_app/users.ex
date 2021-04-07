@@ -22,6 +22,17 @@ defmodule RoommateApp.Users do
     |> Repo.preload([responsibilities: :chore,  invites: :group])
   end
 
+  def list_group_users(group_id) do
+
+    Repo.all(from u in User, where: u.group_id == ^group_id)
+    |> Repo.preload([responsibilities: :chore,  invites: :group])
+
+
+    # Repo.all(User)
+    # |> Repo.preload([responsibilities: :chore,  invites: :group])
+  end
+
+
   @doc """
   Gets a single user.
 
