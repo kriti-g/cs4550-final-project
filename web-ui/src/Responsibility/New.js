@@ -45,7 +45,7 @@ function ChoreNew({session}) {
                               value={chore.rotation}/>
             </Form.Group>
             <Form.Group>
-                <Form.Label>Frequency</Form.Label>
+                <Form.Label>Frequency (Hours)</Form.Label>
                 <Form.Control type="number"
                               onChange={(ev) => update("frequency", ev)}
                               value={chore.frequency}/>

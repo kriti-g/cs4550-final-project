@@ -1,9 +1,8 @@
-import Phoenix, { setPhoenixSocket } from 'react-phoenix-socket';
 import { Socket } from 'phoenix-socket';
 import { fetch_group } from './api'
 
 let socket = new Socket("ws://localhost:4000/socket", {
-  // no authentication just ignore this
+  // no authentication yet just ignore this
   params: {
     token: '123',
   },
@@ -13,15 +12,35 @@ socket.connect();
 let channel = null;
 let group_id = null;
 
+
+
 function state_update(resp) {
   fetch_group(group_id);
+}
+
+export function gen_socket(uid, token) {
+  socket = new Socket("ws://localhost:4000/socket", {
+    params: {
+      user_id: uid,
+      token: token,
+    },
+  });
+  socket.connect();
+}
+
+export function check_channel() {
+  return channel;
+}
+
+export function clear_channel() {
+  channel = null;
 }
 
 // set the channel with gamename and join.
 export function join_group_channel(gid) {
   group_id = gid;
   channel = socket.channel("live_group:" + group_id, {});
-  join_group_channel();
+  join_group();
 }
 
 export function channel_signal() {
@@ -29,7 +48,7 @@ export function channel_signal() {
 }
 
 // join game. called after gamename is set.
-export function join_group_channel() {
+export function join_group() {
   channel
     .join()
     .receive("ok", (resp) => {
