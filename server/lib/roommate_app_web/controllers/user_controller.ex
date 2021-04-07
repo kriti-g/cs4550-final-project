@@ -57,7 +57,6 @@ defmodule RoommateAppWeb.UserController do
     add_to_group_order = user_params["group_id"] != nil && prev_user.group_id == nil
     rem_from_group_order = user_params["group_id"] == -1 && prev_user.group_id != nil
     invalid_transaction = user_params["group_id"] > 0 && prev_user.group_id != nil
-    IO.inspect([:booleans, add_to_group_order, rem_from_group_order, invalid_transaction])
     if !invalid_transaction do
       case Users.update_user(prev_user, user_params) do
         {:ok, %User{} = user} ->
@@ -65,7 +64,6 @@ defmodule RoommateAppWeb.UserController do
             group = Groups.get_group!(user.group_id)
             order = Jason.decode!(group.rotation_order)
             new_order = Jason.encode!([ user.id | order ])
-            IO.inspect([:add_params, order, new_order])
             Groups.update_group(group, %{"rotation_order" => new_order})
             Invites.delete_all_for_user(user.id)
           end
