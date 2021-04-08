@@ -52,7 +52,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     chore_resp = Responsibilities.list_chore_responsibilities(responsibility_params["chore_id"])
 
     res =
-      Enum.reduce(chore_resp, :ok, fn resp, response ->
+      Enum.reduce(chore_resp, :ok, fn resp, _response ->
         # for every users, check if chore_resp.user_id matches
         userResponsible =
           Enum.any?(users, fn u_id ->
@@ -64,7 +64,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
           IO.inspect([:deleted, resp])
           # delete
           case Responsibilities.delete_responsibility(resp) do
-            {:ok, %Responsibility{} = resp} -> :ok
+            {:ok, %Responsibility{} = _resp} -> :ok
             {:error, _changeset} -> :error
           end
         end
@@ -194,7 +194,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
         }
 
         case Responsibilities.create_responsibility(new_params) do
-          {:ok, %Responsibility{} = new_resp} ->
+          {:ok, %Responsibility{} = _new_resp} ->
             Responsibilities.delete_responsibility(old)
             # send text --
             chore = Chores.get_chore!(new_params["chore_id"])
