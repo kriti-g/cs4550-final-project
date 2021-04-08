@@ -2,7 +2,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { create_chore,  fetch_user } from '../api';
+import { create_chore,  fetch_group,  fetch_user } from '../api';
 import {
   join_group_channel,
   channel_signal,
@@ -38,6 +38,7 @@ function ChoreNewForm({session, user}) {
             store.dispatch({type: "error/set", data: rsp.error});
           } else {
             channel_signal();
+            fetch_group(chore.group_id);
             history.push("/group");
           }
         })

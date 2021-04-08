@@ -12,7 +12,7 @@ defmodule RoommateApp.Sms do
     body = msg
 
     # redacted.
-    encodedToken = "Basic " <> Base.encode64("<AccountSid>:<AuthToken>")
+    encodedToken = "Basic " <> Base.encode64("AC1259ba576ff64b91a9c69fe487f7493e:cb34bc53d51fb97a3d1972ad0356cb71")
 
     b =
       HTTPoison.post(
@@ -22,5 +22,12 @@ defmodule RoommateApp.Sms do
       )
 
     IO.inspect([:sendSMS_postresponse, b])
+  end
+
+  # type is of : "[Update]" ,  "[New]"
+  def sendSMS!(%{"type" => type, "phone" => phone_number, "deadline" => deadline, "chore" => chore}) do
+    # date = deadline.day <> "/" <> deadline.month <> "/" <> deadline.year
+    msg = type <> " Chore: " <> chore.name <> " is due " <> deadline
+    sendSMS(%{"phone" => phone_number, "msg" => msg})
   end
 end

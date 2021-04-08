@@ -77,6 +77,8 @@ defmodule RoommateApp.Responsibilities do
     %Responsibility{}
     |> Responsibility.changeset(attrs)
     |> Repo.insert()
+
+
   end
 
   def get_responsibility(chore_id, user_id) do
