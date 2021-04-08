@@ -23,7 +23,7 @@ function ResponsibilityModal(props) {
 
   useEffect(() => {
     if (
-      chore != undefined &&
+      chore &&
       (chore.id !== respState.chore_id || respState.chore_loaded === false)
     ) {
       console.log("USEEFFECT", chore);
@@ -46,10 +46,10 @@ function ResponsibilityModal(props) {
       checkBoxForResponsibleUsers(chore.responsibilities);
     }
     // weird, but this is necessary.
-    if (chore != undefined && respState.chore_loaded === false) {
+    if (chore && respState.chore_loaded === false) {
       checkBoxForResponsibleUsers(chore.responsibilities);
     }
-  });
+  }, [chore, respState]);
 
   //   function
 

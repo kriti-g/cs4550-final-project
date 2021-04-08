@@ -17,7 +17,7 @@ import {
   fetch_group,
   fetch_user,
   update_user,
-  delete_invite,
+  // delete_invite,
   create_invite,
 } from "../api";
 
@@ -100,10 +100,10 @@ function ShowOneGroup({group, session, user}) {
     chores_table = <div>No chores created.</div>;
   }
 
-  const refetch_group = (group_id) => {
-    console.log("refetch group", group_id);
-    fetch_group(group_id);
-  };
+  // const refetch_group = (group_id) => {
+  //   console.log("refetch group", group_id);
+  //   fetch_group(group_id);
+  // };
 
   return (
     <div>
