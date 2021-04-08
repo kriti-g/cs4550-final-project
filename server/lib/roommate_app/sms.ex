@@ -26,6 +26,8 @@ defmodule RoommateApp.Sms do
 
   # type is of : "[Update]" ,  "[New]"
   def sendSMS!(%{"type" => type, "phone" => phone_number, "deadline" => deadline, "chore" => chore}) do
+
+    IO.inspect([:sendSMS!, deadline])
     # date = deadline.day <> "/" <> deadline.month <> "/" <> deadline.year
     msg = type <> " Chore: " <> chore.name <> " is due " <> deadline
     sendSMS(%{"phone" => phone_number, "msg" => msg})

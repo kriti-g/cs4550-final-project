@@ -203,7 +203,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
             Sms.sendSMS!(%{
               "phone" => user.phone_number,
               "type" => "[New]",
-              "deadline" => new_params["deadline"],
+              "deadline" => NaiveDateTime.to_string(new_params["deadline"]),
               "chore" => chore
             })
 
@@ -238,13 +238,16 @@ defmodule RoommateAppWeb.ResponsibilityController do
         case Responsibilities.update_responsibility(old, new_params) do
           {:ok, %Responsibility{} = new_resp} ->
             # send text --
-            chore = Chores.get_chore!(old["chore_id"])
-            user = Users.get_user!(old["user_id"])
+            IO.inspect([:gotone])
+            chore = Chores.get_chore!(old.chore_id)
+            user = Users.get_user!(old.user_id)
+
+            IO.inspect([:gotTWO, chore, user])
 
             Sms.sendSMS!(%{
               "phone" => user.phone_number,
               "type" => "[Update]",
-              "deadline" => new_params["deadline"],
+              "deadline" => NaiveDateTime.to_string(new_params["deadline"]),
               "chore" => chore
             })
 
