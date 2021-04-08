@@ -30,6 +30,12 @@ defmodule RoommateAppWeb.LiveGroupChannel do
     broadcast socket, "update", payload
     {:noreply, socket}
   end
+  
+  @impl true
+  def handle_in("location", payload, socket) do
+    broadcast socket, "location", payload
+    {:noreply, socket}
+  end
 
   def handle_in("delete", payload, socket) do
     broadcast socket, "delete", payload

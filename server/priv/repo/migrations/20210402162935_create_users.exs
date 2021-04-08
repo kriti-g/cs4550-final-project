@@ -7,6 +7,7 @@ defmodule RoommateApp.Repo.Migrations.CreateUsers do
       add :email, :string, null: false
       add :phone_number, :string, null: false
       add :password_hash, :string, null: false
+      add :location, :string, null: true
       add :group_id, references(:groups, on_delete: :nothing), null: true
 
 

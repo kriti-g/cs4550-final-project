@@ -87,3 +87,9 @@ export function join_group() {
   channel.on("delete", state_update);
   channel.on("update", state_update);
 }
+
+export function sendLoc(loc) {
+    channel.push("location", loc)
+        .receive("ok", resp => { console.log("Location successfully sent", resp) })
+        .receive("error", resp => console.log("Error sending location", resp))
+}
