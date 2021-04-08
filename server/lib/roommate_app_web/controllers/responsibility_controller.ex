@@ -48,7 +48,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     chore_resp = Responsibilities.list_chore_responsibilities(responsibility_params["chore_id"])
 
     res =
-      Enum.reduce(chore_resp, :ok, fn resp, response ->
+      Enum.reduce(chore_resp, :ok, fn resp, _response ->
         # for every users, check if chore_resp.user_id matches
         userResponsible =
           Enum.any?(users, fn u_id ->
@@ -60,7 +60,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
           IO.inspect([:deleted, resp])
           # delete
           case Responsibilities.delete_responsibility(resp) do
-            {:ok, %Responsibility{} = resp} -> :ok
+            {:ok, %Responsibility{} = _resp} -> :ok
             {:error, _changeset} -> :error
           end
         end
@@ -83,14 +83,14 @@ defmodule RoommateAppWeb.ResponsibilityController do
         # if it doesn't exist, create new
         if existing_resp == nil do
           case Responsibilities.create_responsibility(resp_params) do
-            {:ok, %Responsibility{} = resp} -> :ok
+            {:ok, %Responsibility{} = _resp} -> :ok
             {:error, _changeset} -> :error
           end
         else
           IO.inspect([:update, existing_resp, resp_params])
 
           case Responsibilities.update_responsibility(existing_resp, resp_params) do
-            {:ok, %Responsibility{} = resp} -> :ok
+            {:ok, %Responsibility{} = _resp} -> :ok
             {:error, _changeset} -> :error
           end
         end
@@ -154,7 +154,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
         next_user_id = get_next_in_rotation(order, old.user_id)
         new_params = %{ "group_id" => group.id, "user_id" => next_user_id, "chore_id" => chore.id, "completions" => 0, "deadline" => new_deadline}
         case Responsibilities.create_responsibility(new_params) do
-          {:ok, %Responsibility{} = new_resp} ->
+          {:ok, %Responsibility{} = _new_resp} ->
             Responsibilities.delete_responsibility(old)
             # TODO: send text here
             true
@@ -177,7 +177,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
       update_all = fn(old) ->
         new_params = %{ "completions" => resp_params["completions"], "deadline" => new_deadline }
         case Responsibilities.update_responsibility(old, new_params) do
-          {:ok, %Responsibility{} = new_resp} ->
+          {:ok, %Responsibility{} = _new_resp} ->
             # TODO: send text here
             true
           {:error, _changeset} ->

@@ -69,12 +69,19 @@ function ChoreNewForm({session, user}) {
                 <Form.Control type="number"
                               onChange={(ev) => update("rotation", ev)}
                               value={chore.rotation}/>
+                <Form.Text muted>
+                How many times should someone complete this until it
+                switches to the next member? Leave as zero for no rotations.
+                </Form.Text>
             </Form.Group>
             <Form.Group>
-                <Form.Label>Frequency (in days)</Form.Label>
+                <Form.Label>Frequency (in hours)</Form.Label>
                 <Form.Control type="number"
                               onChange={(ev) => update("frequency", ev)}
                               value={chore.frequency}/>
+                <Form.Text muted>
+                How often should this chore be repeated?
+                </Form.Text>
             </Form.Group>
             <Button variant="primary" type="submit">
                 Save
