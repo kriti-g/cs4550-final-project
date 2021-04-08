@@ -113,14 +113,14 @@ function ChoreControls({chore, session}) {
   let delete_button = (
     <Button
     variant="danger"
-    onClick={(_ev) => on_delete()}>
+    onClick={(ev) => on_delete()}>
     Delete
     </Button>
   )
   let edit_button = is_responsible ? (
     <Button
     variant="success"
-    onClick={(_ev) => mark_complete()}>
+    onClick={(ev) => mark_complete()}>
     Mark complete
     </Button>
   ) : (<></>)
@@ -131,9 +131,9 @@ function ChoreControls({chore, session}) {
 function ShowChore({chore, session}){
     let match = useRouteMatch();
     let id = match.params.id;
-    if(chore && chore.id === id && check_chore() !== "deleted") {
+    if(chore && chore.id == id && check_chore() !== "deleted") {
         return (<ShowOneChore chore={chore} session={session}/>);
-    } else if (session && (chore === null || chore.id !== id)) {
+    } else if (session && (chore === null || chore.id != id)) {
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
     } else {
