@@ -49,7 +49,7 @@ export function listen_for_deletions(cb) {
   channel.on("delete", cb);
 }
 
-// set the channel with gamename and join.
+// set the channel with gid and join
 export function join_group_channel(uid, gid) {
   user_id = uid;
   group_id = gid;
@@ -72,7 +72,7 @@ export function channel_signal_deletion(cid) {
   console.log("choreid", cid)
   channel.push("delete", { chore_id: cid })
 }
-// join game. called after gamename is set.
+// join game. called after group id is set
 export function join_group() {
   channel
     .join()

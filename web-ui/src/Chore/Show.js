@@ -131,9 +131,9 @@ function ChoreControls({chore, session}) {
 function ShowChore({chore, session}){
     let match = useRouteMatch();
     let id = match.params.id;
-    if(chore && chore.id === id && check_chore() !== "deleted") {
+    if(chore && chore.id === parseInt(id) && check_chore() !== "deleted") {
         return (<ShowOneChore chore={chore} session={session}/>);
-    } else if (session && (chore === null || chore.id !== id)) {
+    } else if (session && (chore === null || chore.id !== parseInt(id))) {
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
     } else {
