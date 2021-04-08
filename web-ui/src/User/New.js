@@ -163,7 +163,6 @@ function UserNewForm() {
 
 
 function UserNew({session}) {
-    console.log("User New")
     if(session) {
         return (<h6>Already Signed In</h6>);
     } else {

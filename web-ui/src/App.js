@@ -7,10 +7,8 @@ import Home from './Home';
 import UserList from './User/List';
 import UserNew from './User/New';
 import ShowUser from './User/Show';
-//import ChoreList from './Chore/List';
 import ChoreNew from './Chore/New';
 import ShowChore from './Chore/Show';
-//import GroupList from './Group/List';
 import GroupNew from './Group/New';
 import ShowGroup from './Group/Show';
 

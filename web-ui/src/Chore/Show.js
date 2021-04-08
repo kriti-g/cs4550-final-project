@@ -134,6 +134,7 @@ function ShowChore({chore, session}){
     if(chore && chore.id == id && check_chore() !== "deleted") {
         return (<ShowOneChore chore={chore} session={session}/>);
     } else if (session && (chore === null || chore.id != id)) {
+
         fetch_chore(id);
         return (<h6>Loading Chore...</h6>);
     } else {
