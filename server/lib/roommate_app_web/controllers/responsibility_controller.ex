@@ -4,6 +4,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
   alias RoommateApp.Responsibilities
   alias RoommateApp.Groups
   alias RoommateApp.Chores
+  alias RoommateApp.Users
   alias RoommateApp.Responsibilities.Responsibility
   alias RoommateAppWeb.Plugs
   alias RoommateApp.Sms
@@ -23,7 +24,10 @@ defmodule RoommateAppWeb.ResponsibilityController do
     else
       conn
       |> put_resp_header("content-type", "application/json; charset=UTF-8")
-      |> send_resp(:unauthorized, Jason.encode!(%{"error" => "You don't have access to this responsibility."}))
+      |> send_resp(
+        :unauthorized,
+        Jason.encode!(%{"error" => "You don't have access to this responsibility."})
+      )
       |> halt()
     end
   end
@@ -83,15 +87,41 @@ defmodule RoommateAppWeb.ResponsibilityController do
         # if it doesn't exist, create new
         if existing_resp == nil do
           case Responsibilities.create_responsibility(resp_params) do
-            {:ok, %Responsibility{} = _resp} -> :ok
-            {:error, _changeset} -> :error
+            {:ok, %Responsibility{} = resp} ->
+              chore = Chores.get_chore!(resp_params["chore_id"])
+              user = Users.get_user!(resp_params["user_id"])
+
+              Sms.sendSMS!(%{
+                "phone" => user.phone_number,
+                "type" => "[New]",
+                "deadline" => resp_params["deadline"],
+                "chore" => chore
+              })
+
+              :ok
+
+            {:error, _changeset} ->
+              :error
           end
         else
           IO.inspect([:update, existing_resp, resp_params])
 
           case Responsibilities.update_responsibility(existing_resp, resp_params) do
-            {:ok, %Responsibility{} = _resp} -> :ok
-            {:error, _changeset} -> :error
+            {:ok, %Responsibility{} = resp} ->
+              chore = Chores.get_chore!(resp_params["chore_id"])
+              user = Users.get_user!(resp_params["user_id"])
+
+              Sms.sendSMS!(%{
+                "phone" => user.phone_number,
+                "type" => "[Update]",
+                "deadline" => resp_params["deadline"],
+                "chore" => chore
+              })
+
+              :ok
+
+            {:error, _changeset} ->
+              :error
           end
         end
       end)
@@ -146,23 +176,47 @@ defmodule RoommateAppWeb.ResponsibilityController do
     new_deadline = DateTime.to_naive(DateTime.add(time_now, chore.frequency * 3600, :second))
     finished_rotation = resp_params["completions"] >= chore.rotation && chore.rotation != 0
     IO.inspect([:update_first, new_deadline, finished_rotation])
+
     if finished_rotation do
       # switch resps over to next people in the rotation
       group = Groups.get_group!(chore.group_id)
       {:ok, order} = Jason.decode(group.rotation_order)
-      switch_over = fn(old) ->
+
+      switch_over = fn old ->
         next_user_id = get_next_in_rotation(order, old.user_id)
-        new_params = %{ "group_id" => group.id, "user_id" => next_user_id, "chore_id" => chore.id, "completions" => 0, "deadline" => new_deadline}
+
+        new_params = %{
+          "group_id" => group.id,
+          "user_id" => next_user_id,
+          "chore_id" => chore.id,
+          "completions" => 0,
+          "deadline" => new_deadline
+        }
+
         case Responsibilities.create_responsibility(new_params) do
           {:ok, %Responsibility{} = _new_resp} ->
             Responsibilities.delete_responsibility(old)
-            # TODO: send text here
+            # send text --
+            chore = Chores.get_chore!(new_params["chore_id"])
+            user = Users.get_user!(new_params["user_id"])
+
+            Sms.sendSMS!(%{
+              "phone" => user.phone_number,
+              "type" => "[New]",
+              "deadline" => NaiveDateTime.to_string(new_params["deadline"]),
+              "chore" => chore
+            })
+
+            # -- end send text
             true
+
           {:error, _changeset} ->
             false
         end
       end
+
       full_success = Enum.all?(old_resps, switch_over)
+
       if full_success do
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
@@ -170,21 +224,43 @@ defmodule RoommateAppWeb.ResponsibilityController do
       else
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
-        |> send_resp(422, Jason.encode!(%{error: "Some responsibilities may not have updated properly."}))
+        |> send_resp(
+          422,
+          Jason.encode!(%{error: "Some responsibilities may not have updated properly."})
+        )
       end
     else
       # update normally
-      update_all = fn(old) ->
-        new_params = %{ "completions" => resp_params["completions"], "deadline" => new_deadline }
+      update_all = fn old ->
+        new_params = %{"completions" => resp_params["completions"], "deadline" => new_deadline}
+        IO.inspect([:new_params, new_params, old])
+
         case Responsibilities.update_responsibility(old, new_params) do
-          {:ok, %Responsibility{} = _new_resp} ->
-            # TODO: send text here
+          {:ok, %Responsibility{} = new_resp} ->
+            # send text --
+            IO.inspect([:gotone])
+            chore = Chores.get_chore!(old.chore_id)
+            user = Users.get_user!(old.user_id)
+
+            IO.inspect([:gotTWO, chore, user])
+
+            Sms.sendSMS!(%{
+              "phone" => user.phone_number,
+              "type" => "[Update]",
+              "deadline" => NaiveDateTime.to_string(new_params["deadline"]),
+              "chore" => chore
+            })
+
+            # -- end send text
             true
+
           {:error, _changeset} ->
             false
         end
       end
+
       full_success = Enum.all?(old_resps, update_all)
+
       if full_success do
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
@@ -192,7 +268,10 @@ defmodule RoommateAppWeb.ResponsibilityController do
       else
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
-        |> send_resp(422, Jason.encode!(%{error: "Some responsibilities may not have updated properly."}))
+        |> send_resp(
+          422,
+          Jason.encode!(%{error: "Some responsibilities may not have updated properly."})
+        )
       end
     end
   end
@@ -203,6 +282,7 @@ defmodule RoommateAppWeb.ResponsibilityController do
     case Responsibilities.update_responsibility(prev_resp, resp_params) do
       {:ok, %Responsibility{} = new_resp} ->
         render(conn, "show.json", responsibility: new_resp)
+
       {:error, _changeset} ->
         conn
         |> put_resp_header("content-type", "application/json; charset=UTF-8")
