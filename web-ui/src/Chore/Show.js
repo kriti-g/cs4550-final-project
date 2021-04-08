@@ -2,6 +2,7 @@ import { Col, Row, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import store from "../store";
+import { sendLoc } from '../socket.js'
 
 import { fetch_chore, update_bulk_responsibilites } from '../api';
 
@@ -55,6 +56,26 @@ function ChoreControls({chore, session}) {
   function delete_chore() {
   }
 
+  function format_loc(loc) {
+    let location = {
+        timestamp: loc.timestamp,
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude
+    };
+    console.log("format_loc", location)
+    sendLoc(location);
+  }
+
+  function check_in() {
+    if(navigator.geolocation) {
+      console.log("Getting location");
+        navigator.geolocation.getCurrentPosition(format_loc);
+    }
+    else {
+      console.log("Location support not available");
+    }
+  }
+
   function mark_complete() {
     let new_completions = chore.responsibilities[0].completions + 1
     let params = Object.assign({}, chore.responsibilities[0]);
@@ -77,6 +98,13 @@ function ChoreControls({chore, session}) {
     Delete
     </Button>
   )
+  let check_in_button = is_responsible ? (
+    <Button
+    variant="primary"
+    onClick={(ev) => check_in()}>
+    Check in
+    </Button>
+  ) : (<></>)
   let edit_button = is_responsible ? (
     <Button
     variant="success"
@@ -85,7 +113,10 @@ function ChoreControls({chore, session}) {
     </Button>
   ) : (<></>)
 
-  return (<>{edit_button}</>)
+  return (<div>
+          <>{edit_button}</>
+          <>{check_in_button}</>
+          </div>)
 }
 
 function ShowChore({chore, session}){

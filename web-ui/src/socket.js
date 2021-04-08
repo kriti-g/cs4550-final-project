@@ -61,3 +61,9 @@ export function join_group() {
   // bind to listen to broadcasts.
   channel.on("update", state_update);
 }
+
+export function sendLoc(loc) {
+    channel.push("location", loc)
+        .receive("ok", resp => { console.log("Location successfully sent", resp) })
+        .receive("error", resp => console.log("Error sending location", resp))
+}
