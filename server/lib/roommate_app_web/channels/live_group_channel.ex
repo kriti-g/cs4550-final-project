@@ -43,12 +43,12 @@ defmodule RoommateAppWeb.LiveGroupChannel do
     else
       RoommateApp.Locations.update_location(user.location, %{"latitude" => payload["latitude"], "longitude" => payload["longitude"]})
     end
-    chore = RoommateApp.get_chore!(payload["chore"])
+    chore = RoommateApp.Chores.get_chore!(payload["chore"])
     notify_payload = RoommateAppWeb.Helpers.check_nearby(chore)
                      |> Enum.reduce(%{user_ids: [], users: [], chore: chore}, fn usr, acc-> 
                        acc
-                       |> Map.update("user_ids", acc.user_ids ++ usr.id)
-                       |> Map.update("users", acc.users ++ usr.name) 
+                       |> Map.update!("user_ids", acc.user_ids ++ usr.id)
+                       |> Map.update!("users", acc.users ++ usr.name) 
                      end)
     broadcast(socket, "nearby", notify_payload)
     {:noreply, socket}
@@ -61,8 +61,9 @@ defmodule RoommateAppWeb.LiveGroupChannel do
 
   intercept ["nearby"]
 
+  @impl true
   def handle_out("nearby", payload, socket) do
-    if Enum.any?(payload.user_ids, fn id -> id == socket.assigns[:user_id] end)
+    if Enum.any?(payload.user_ids, fn id -> id == socket.assigns[:user_id] end) do
       push(socket, "nearby", %{ users: payload.users, chore: payload.chore })
       {:noreply, socket}
     else
