@@ -7,12 +7,11 @@ defmodule RoommateApp.Users.User do
     field :name, :string
     field :phone_number, :string
     field :password_hash, :string
-    field :location, :string
 
     belongs_to :group, RoommateApp.Groups.Group
     has_many :responsibilities, RoommateApp.Responsibilities.Responsibility
     has_many :invites, RoommateApp.Invites.Invite
-
+    has_one :location, RoommateApp.Locations.Location
 
     timestamps()
   end

@@ -49,7 +49,7 @@ defmodule RoommateApp.Users do
   """
   def get_user!(id) do
     Repo.get!(User, id)
-    |> Repo.preload([responsibilities: :chore,  invites: :group])
+    |> Repo.preload([responsibilities: :chore,  invites: :group, location: []])
   end
 
   def load_resp_chores(%User{} = user) do

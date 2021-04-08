@@ -53,7 +53,7 @@ export function listen_for_deletions(cb) {
 export function join_group_channel(uid, gid) {
   user_id = uid;
   group_id = gid;
-  channel = socket.channel("live_group:" + group_id, {});
+  channel = socket.channel("live_group:" + group_id, {user: user_id});
   join_group();
 }
 

@@ -98,7 +98,7 @@ function ChoreControls({chore, session}) {
 
   function format_loc(loc) {
     let location = {
-        timestamp: loc.timestamp,
+        chore: chore.id,
         latitude: loc.coords.latitude,
         longitude: loc.coords.longitude
     };
