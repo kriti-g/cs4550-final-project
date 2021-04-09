@@ -1,4 +1,5 @@
 import { Table, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetch_user, update_bulk_responsibilites } from './api';
 import {
@@ -37,7 +38,7 @@ function Home({session, user}) {
     let chores_rows = user.responsibilities.map((resp) => {
       return (
         <tr key={resp.id}>
-        <td>{resp.chore.name}</td>
+        <td><Link to={"/chores/" + resp.chore.id}>{resp.chore.name}</Link></td>
         <td>{resp.deadline}</td>
         <td><Button
         variant="success"

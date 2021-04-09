@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useState } from 'react';
 import { api_login } from './api';
+import store from './store';
 
 function Link({to, children}) {
   return (
@@ -70,8 +71,12 @@ function LOI({session}) {
 
 const LoginOrLogoutNav = connect(({session}) => ({session}))(LOI);
 
-function AppNav({error}) {
+function AppNav({message, error}) {
     console.log("AppNav", error)
+    let message_row = null;
+    if(message) {
+        message_row = (<Alert variant="success" onClose={() => { store.dispatch({type: "message/clear"}); }} dismissible>{message}</Alert>);
+    }
     let error_row = null;
     if(error) {
         error_row = (<Alert variant="danger">{error}</Alert>)
@@ -89,6 +94,11 @@ function AppNav({error}) {
             </Row>
             <Row>
                 <Col>
+                    {message_row}
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                     {error_row}
                 </Col>
             </Row>
@@ -96,4 +106,4 @@ function AppNav({error}) {
     );
 }
 
-export default connect(({error})=>({error}))(AppNav)
+export default connect(({message, error})=>({message, error}))(AppNav)

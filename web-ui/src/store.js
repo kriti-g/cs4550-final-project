@@ -1,5 +1,6 @@
 // https://github.com/NatTuck/scratch-2021-01/blob/master/notes-4550/18-passwords/notes.md#adding-passwords-to-photoblog-branch-06-passwords
 import { createStore, combineReducers } from "redux";
+import { clear_channel } from './socket'
 
 function users(state = [], action) {
   switch (action.type) {
@@ -65,6 +66,17 @@ function error(state = null, action) {
   }
 }
 
+function message(state = null, action) {
+    switch(action.type) {
+        case "message/set":
+            return action.data
+        case "message/clear":
+            return null;
+        default:
+            return state;
+    }
+}
+
 function save_session(sess) {
   if (sess) {
     let session = Object.assign({}, sess, { time: Date.now() });
@@ -102,6 +114,8 @@ function session(state = restore_session(), action) {
       save_session(action.data);
       return action.data;
     case "session/clear":
+      // close socket
+      clear_channel()
       // kill the stored session
       save_session(null);
       return null;
@@ -122,6 +136,7 @@ function root_reducer(state, action) {
     group,
     responsibility,
     error,
+    message,
     session
   });
   console.log("root_reducer", state, action);

@@ -11,7 +11,7 @@ defmodule RoommateApp.Users.User do
     belongs_to :group, RoommateApp.Groups.Group
     has_many :responsibilities, RoommateApp.Responsibilities.Responsibility
     has_many :invites, RoommateApp.Invites.Invite
-
+    has_one :location, RoommateApp.Locations.Location
 
     timestamps()
   end

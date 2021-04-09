@@ -1,5 +1,6 @@
 import { Socket } from 'phoenix-socket';
 import { fetch_group, fetch_chore, fetch_user } from './api'
+import store from "./store";
 
 let socket = new Socket("ws://localhost:4000/socket", { params: {}});
 socket.connect();
@@ -53,7 +54,7 @@ export function listen_for_deletions(cb) {
 export function join_group_channel(uid, gid) {
   user_id = uid;
   group_id = gid;
-  channel = socket.channel("live_group:" + group_id, {});
+  channel = socket.channel("live_group:" + group_id, {user: user_id});
   join_group();
 }
 
@@ -86,4 +87,13 @@ export function join_group() {
   // bind to listen to broadcasts.
   channel.on("delete", state_update);
   channel.on("update", state_update);
+}
+
+export function sendLoc(loc) {
+    channel.push("location", loc)
+        .receive("ok", resp => { console.log("Location successfully sent", resp) })
+        .receive("error", resp => console.log("Error sending location", resp))
+    channel.on("nearby", payload => {
+        store.dispatch({type: "message/set", data: payload})
+})
 }
