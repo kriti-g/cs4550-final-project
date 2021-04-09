@@ -21,7 +21,7 @@ defmodule RoommateAppWeb.Helpers do
       acc ++ [RoommateApp.Users.get_user!(rsp.user_id)]
     end)
     |> Enum.filter(fn usr ->
-      NaiveDateTime.diff(usr.location.updated_at, NaiveDateTime.utc_now()) < (10 * 60)
+      usr.location && NaiveDateTime.diff(usr.location.updated_at, NaiveDateTime.utc_now()) < (10 * 60)
     end)
     |> check_nearby_helper
   end

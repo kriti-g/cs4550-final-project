@@ -57,6 +57,7 @@ function ShowOneChore({chore, session}) {
     return (
         <Row>
             <Col>
+                <div id="messages" role="log" aria-live="polite"></div>
                 <h4> {chore.name} </h4>
                 <p>Complete by {next_deadline}</p>
                 <p>{rem_completions}</p>

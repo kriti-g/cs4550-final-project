@@ -92,4 +92,10 @@ export function sendLoc(loc) {
     channel.push("location", loc)
         .receive("ok", resp => { console.log("Location successfully sent", resp) })
         .receive("error", resp => console.log("Error sending location", resp))
+    let messagesContainer = document.querySelector("#messages")
+    channel.on("nearby", payload => {
+        let messageItem = document.createElement("p")
+        messageItem.innerText = `${payload}`
+        messagesContainer.appendChild(messageItem)
+})
 }
