@@ -139,7 +139,6 @@ function root_reducer(state, action) {
     message,
     session
   });
-  console.log("root_reducer", state, action);
   return reducer(state, action);
 }
 

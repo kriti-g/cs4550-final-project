@@ -138,7 +138,6 @@ export function load_defaults() {
 //   https://github.com/NatTuck/scratch-2021-01/blob/master/notes-4550/18-passwords/notes.md#adding-passwords-to-photoblog-branch-06-passwords
 export function api_login(email, password) {
   api_post("/session", { email, password }).then((data) => {
-    console.log("login resp", data);
     if (data.session) {
       let action = {
         type: "session/set",

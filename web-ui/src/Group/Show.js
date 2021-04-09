@@ -100,11 +100,6 @@ function ShowOneGroup({group, session, user}) {
     chores_table = <div>No chores created.</div>;
   }
 
-  // const refetch_group = (group_id) => {
-  //   console.log("refetch group", group_id);
-  //   fetch_group(group_id);
-  // };
-
   return (
     <div>
       <Row>

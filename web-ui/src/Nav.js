@@ -72,7 +72,6 @@ function LOI({session}) {
 const LoginOrLogoutNav = connect(({session}) => ({session}))(LOI);
 
 function AppNav({message, error}) {
-    console.log("AppNav", error)
     let message_row = null;
     if(message) {
         message_row = (<Alert variant="success" onClose={() => { store.dispatch({type: "message/clear"}); }} dismissible>{message}</Alert>);

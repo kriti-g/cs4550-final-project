@@ -70,7 +70,6 @@ export function reset_cb_bindings() {
 }
 
 export function channel_signal_deletion(cid) {
-  console.log("choreid", cid)
   channel.push("delete", { chore_id: cid })
 }
 // join game. called after group id is set
@@ -78,7 +77,6 @@ export function join_group() {
   channel
     .join()
     .receive("ok", (resp) => {
-      console.log("Joined", resp);
     })
     .receive("error", (resp) => {
       console.log("Unable to join", resp);
@@ -91,8 +89,8 @@ export function join_group() {
 
 export function sendLoc(loc) {
     channel.push("location", loc)
-        .receive("ok", resp => { console.log("Location successfully sent", resp) })
-        .receive("error", resp => console.log("Error sending location", resp))
+        .receive("ok", resp => { })
+        .receive("error", resp => { })
     channel.on("nearby", payload => {
         store.dispatch({type: "message/set", data: payload})
 })

@@ -102,13 +102,11 @@ function ChoreControls({chore, session}) {
         latitude: loc.coords.latitude,
         longitude: loc.coords.longitude
     };
-    console.log("format_loc", location)
     sendLoc(location);
   }
 
   function check_in() {
     if(navigator.geolocation) {
-      console.log("Getting location");
         navigator.geolocation.getCurrentPosition(format_loc);
     }
     else {

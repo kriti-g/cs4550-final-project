@@ -26,7 +26,6 @@ function ResponsibilityModal(props) {
       chore &&
       (chore.id !== respState.chore_id || respState.chore_loaded === false)
     ) {
-      console.log("USEEFFECT", chore);
       let new_user_ids = [];
       chore.responsibilities.forEach((resp) => {
         new_user_ids.push(resp.user.id);
@@ -54,7 +53,6 @@ function ResponsibilityModal(props) {
   //   function
 
   function save() {
-    console.log("RESPSTATE", respState);
 
     let responsibility = {
       deadline: Array.isArray(respState.deadline)
@@ -67,7 +65,6 @@ function ResponsibilityModal(props) {
     };
 
     create_bulk_responsibilites(responsibility).then((rsp) => {
-      console.log("MODAL-SAVE", rsp);
       if (rsp.error) {
         // if receiving an error, display it.
         store.dispatch({ type: "error/set", data: rsp.error });
@@ -85,7 +82,6 @@ function ResponsibilityModal(props) {
   }
   // add or remove user_id to respState.user_ids depending on if they already exist or not.
   function selectUsers(user_id) {
-    console.log("#", respState.user_ids);
     let idx = respState.user_ids.indexOf(user_id);
     let new_user_ids = respState.user_ids;
 
