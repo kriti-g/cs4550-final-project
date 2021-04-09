@@ -1,6 +1,6 @@
 import store from "./store";
 
-const url = "http://roommate.gkriti.art/api/v1"
+const url = "https://roommate.gkriti.art/api/v1"
 // get the current session token if there is one.
 function session_token() {
   let state = store.getState();
