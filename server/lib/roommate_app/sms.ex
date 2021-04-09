@@ -12,7 +12,7 @@ defmodule RoommateApp.Sms do
     body = msg
 
     # redacted.
-    encodedToken = "Basic " <> Base.encode64("AccountSid:AuthToken")
+    encodedToken = "Basic " <> Base.encode64(Application.get_env(:sms_token, :token))
 
     b =
       HTTPoison.post(

@@ -32,6 +32,13 @@ config :roommate_app, RoommateAppWeb.Endpoint,
 
 config :joken,
   default_signer: System.get_env("JWT_SECRET") || "secret"
+
+config :sms_token,
+  token: System.get_env("TWILIO_AUTH_TOKEN") ||
+      raise """
+      environment variable TWILIO_AUTH_TOKEN is missing.
+      fix it bro
+      """
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix
