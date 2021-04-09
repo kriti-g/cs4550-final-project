@@ -2,7 +2,7 @@ import { Socket } from 'phoenix-socket';
 import { fetch_group, fetch_chore, fetch_user } from './api'
 import store from "./store";
 
-let socket = new Socket("ws://localhost:4000/socket", { params: {}});
+let socket = new Socket("http://roommate.gkriti.art/api/v1/socket", { params: {}});
 socket.connect();
 
 let channel = null;

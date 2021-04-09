@@ -1,5 +1,6 @@
 import store from "./store";
 
+const url = "http://roommate.gkriti.art/api/v1"
 // get the current session token if there is one.
 function session_token() {
   let state = store.getState();
@@ -14,7 +15,7 @@ export async function api_get(path) {
       "Session-Token": stoken,
     },
   };
-  let text = await fetch("http://localhost:4000/api/v1" + path, opts);
+  let text = await fetch(url + path, opts);
   let resp = await text.json();
   return resp.data;
 }
@@ -29,7 +30,7 @@ async function api_post(path, data) {
     },
     body: JSON.stringify(data),
   };
-  let text = await fetch("http://localhost:4000/api/v1" + path, opts);
+  let text = await fetch(url + path, opts);
   return await text.json();
 }
 
@@ -44,7 +45,7 @@ async function api_patch(path, data) {
     body: JSON.stringify(data),
   };
 
-  let text = await fetch("http://localhost:4000/api/v1" + path, opts);
+  let text = await fetch(url + path, opts);
   return await text.json();
 }
 
@@ -59,7 +60,7 @@ async function api_delete(path, data) {
     body: JSON.stringify(data),
   };
 
-  let text = await fetch("http://localhost:4000/api/v1" + path, opts);
+  let text = await fetch(url + path, opts);
   return text;
 }
 
