@@ -7,7 +7,7 @@ server {
     # Add index.php to the list if you are using PHP
     index index.html;
 
-    server_name roommate_app.gkriti.art www.roommate_app.gkriti.art;
+    server_name roommate.gkriti.art www.roommate.gkriti.art;
 
     location / {
         # First attempt to serve request as file, then
