@@ -1,5 +1,6 @@
 import { Socket } from 'phoenix-socket';
 import { fetch_group, fetch_chore, fetch_user } from './api'
+import store from "./store";
 
 let socket = new Socket("ws://localhost:4000/socket", { params: {}});
 socket.connect();
@@ -92,10 +93,7 @@ export function sendLoc(loc) {
     channel.push("location", loc)
         .receive("ok", resp => { console.log("Location successfully sent", resp) })
         .receive("error", resp => console.log("Error sending location", resp))
-    let messagesContainer = document.querySelector("#messages")
     channel.on("nearby", payload => {
-        let messageItem = document.createElement("p")
-        messageItem.innerText = `${payload}`
-        messagesContainer.appendChild(messageItem)
+        store.dispatch({type: "message/set", data: payload})
 })
 }

@@ -45,10 +45,12 @@ defmodule RoommateAppWeb.LiveGroupChannel do
     end
     chore = RoommateApp.Chores.get_chore!(payload["chore"])
     notify_payload = RoommateAppWeb.Helpers.check_nearby(chore)
-                     |> Enum.reduce(%{user_ids: [], users: [], chore: chore}, fn usr, acc-> 
-                       acc
-                       |> Map.update!("user_ids", acc.user_ids ++ usr.id)
-                       |> Map.update!("users", acc.users ++ usr.name) 
+                     |> Enum.reduce(%{user_ids: [], users: [], chore: chore.name}, fn usr, acc-> 
+                       %{
+                         user_ids: acc.user_ids ++ [usr.id],
+                         users: acc.users ++ [usr.name],
+                         chore: acc.chore
+                       }
                      end)
     broadcast(socket, "nearby", notify_payload)
     {:noreply, socket}
@@ -60,11 +62,20 @@ defmodule RoommateAppWeb.LiveGroupChannel do
   end
 
   intercept ["nearby"]
-
   @impl true
   def handle_out("nearby", payload, socket) do
     if Enum.any?(payload.user_ids, fn id -> id == socket.assigns[:user_id] end) do
-      push(socket, "nearby", %{ users: payload.users, chore: payload.chore })
+      user = RoommateApp.Users.get_user!(socket.assigns[:user_id])
+      msg = Enum.reduce(payload.users, "Users [", fn usr, acc ->
+        if(usr != user.name) do
+          acc <> usr <> ","
+        else
+          acc
+        end
+      end)
+      msg = String.slice(msg, 0, String.length(msg) - 1) <> "] are nearby for chore "
+      msg = msg <> payload.chore
+      push(socket, "nearby", msg)
       {:noreply, socket}
     else
       {:noreply, socket}

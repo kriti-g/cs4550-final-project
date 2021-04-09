@@ -3,8 +3,8 @@ defmodule RoommateApp.Repo.Migrations.CreateLocations do
 
   def change do
     create table(:locations) do
-      add :latitude, :decimal, null: true
-      add :longitude, :decimal, null: true
+      add :latitude, :float, null: true
+      add :longitude, :float, null: true
       add :user_id, references(:users, on_delete: :delete_all), null: false
 
       timestamps()

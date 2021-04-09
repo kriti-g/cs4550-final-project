@@ -3,8 +3,8 @@ defmodule RoommateApp.Locations.Location do
   import Ecto.Changeset
 
   schema "locations" do
-    field :latitude, :decimal
-    field :longitude, :decimal
+    field :latitude, :float
+    field :longitude, :float
 
     belongs_to :user, RoommateApp.Users.User
 

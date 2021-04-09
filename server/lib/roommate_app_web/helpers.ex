@@ -16,9 +16,9 @@ defmodule RoommateAppWeb.Helpers do
   end
 
   def check_nearby(chore) do
-    chore.responsibilities
-    |> Enum.reduce([], fn rsp, acc -> 
-      acc ++ [RoommateApp.Users.get_user!(rsp.user_id)]
+    users = chore.responsibilities
+    |> Enum.map(fn rsp -> 
+      RoommateApp.Users.get_user!(rsp.user_id)
     end)
     |> Enum.filter(fn usr ->
       usr.location && NaiveDateTime.diff(usr.location.updated_at, NaiveDateTime.utc_now()) < (10 * 60)
@@ -29,9 +29,13 @@ defmodule RoommateAppWeb.Helpers do
   defp check_nearby_helper([user | users_tail]) do
     uloc = user.location
     to_notify = Enum.filter(users_tail, fn usr ->
-      calculate_distance(uloc, RoommateApp.Locations.get_location!(usr.location)) <= 10
+      calculate_distance(uloc, usr.location) <= 10
     end)
-    to_notify ++ check_nearby_helper(users_tail)
+    if !Enum.empty?(to_notify) do
+      [user] ++ to_notify ++ check_nearby_helper(users_tail)
+    else
+      check_nearby_helper(users_tail)
+    end
   end
 
   defp check_nearby_helper([]), do: []
@@ -39,9 +43,9 @@ defmodule RoommateAppWeb.Helpers do
   # spherical law of cosines
   defp calculate_distance(loc1, loc2) do
     m = :math.pi / 180
-    la1 = loc1["latitude"] * m
-    la2 = loc2["latitude"] * m
-    lo = (loc2["longitude"] - loc1["longitude"]) * m
+    la1 = loc1.latitude * m
+    la2 = loc2.latitude * m
+    lo = (loc2.longitude - loc1.longitude) * m
     r = 63710
     :math.acos((:math.sin(la1) * :math.sin(la2)) + (:math.cos(la1) * :math.cos(la2) * :math.cos(lo))) * r
   end
