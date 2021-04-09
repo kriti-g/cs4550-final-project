@@ -75,7 +75,7 @@ function AppNav({message, error}) {
     console.log("AppNav", error)
     let message_row = null;
     if(message) {
-        message_row = (<Alert variant="sucess" onClose={() => { store.dispatch({type: "message/clear"}); }} dismissible>{message}</Alert>);
+        message_row = (<Alert variant="success" onClose={() => { store.dispatch({type: "message/clear"}); }} dismissible>{message}</Alert>);
     }
     let error_row = null;
     if(error) {
