@@ -15,7 +15,7 @@ user registration and login (session handling), and form and show pages. He also
 worked on JWT integration and the location feature. Benjamin did a bulk of work
 on the location feature, and also handled all the presentation editing.
 
-#### App Usage
+### App Usage
 
 Our app allows a group of people to coordinate chores. Specifically, once one
 has made an account, it allows them to form a group and invite others to join
@@ -50,7 +50,7 @@ which tells her that Bob is nearby and ready for Grocery Shopping.
 - Carol receives the message informing her of the reassignment, so she knows
 that she has to go grocery shopping next.
 
-#### Features, Requirements, Testing
+### Features, Requirements, Testing
 
 Our project is an SPA created with React and Phoenix, where the front-end app
 communicates with the server via JSON API (authenticated with JWT) and Elixir
@@ -79,7 +79,7 @@ same thing in real-time, etc. Seeing as none of us were able to meet in person,
 however, the location aspect was tested by one person logged into two different
 accounts.
 
-#### Developments after Initial Proposal
+### Developments after Initial Proposal
 
 The project has stayed consistent with the proposal for the most part, with only
 a few minor changes. For example, where the proposal initially said that upon a
@@ -90,7 +90,7 @@ would want. Ultimately, we decided that their assignments should simply be
 removed, and their chores' reassignment and redistribution should be up to the
 remaining members to decide manually.
 
-#### Notable Challenges
+### Notable Challenges
 
 One of the most complex parts of the app is managing the “responsibilities” and
 “chore” object workflow. The end result is that we wanted users to be able to
